@@ -345,8 +345,13 @@
       background: var(--white); border: 1px solid var(--gray-200);
       border-radius: 14px; overflow: hidden;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer; position: relative;
     }
-    .comp-card:hover { border-color: var(--gray-300); box-shadow: 0 8px 30px rgba(0,0,0,0.04); transform: translateY(-2px); }
+    .comp-card:hover {
+      border-color: var(--indigo); box-shadow: 0 8px 30px rgba(99,102,241,0.08);
+      transform: translateY(-4px);
+    }
+    .comp-card:active { transform: translateY(-2px) scale(0.99); }
     .comp-preview {
       padding: 32px 24px; display: flex; align-items: center;
       justify-content: center; gap: 10px; flex-wrap: wrap;
@@ -358,6 +363,16 @@
     }
     .comp-name { font-size: 13px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.01em; }
     .comp-desc { font-size: 11.5px; color: var(--gray-400); }
+    .comp-meta-arrow {
+      width: 20px; height: 20px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--gray-50); color: var(--gray-400); font-size: 12px;
+      transition: all 0.2s; flex-shrink: 0; margin-left: 8px;
+    }
+    .comp-card:hover .comp-meta-arrow {
+      background: rgba(99,102,241,0.08); color: var(--indigo);
+      transform: translateX(2px);
+    }
 
     /* Live previews */
     .p-btn {
@@ -674,10 +689,14 @@
     }
 
     /* Marquee */
-    @keyframes marquee-scroll { to { transform: translateX(-50%); } }
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     .p-marquee {
       display: flex; gap: 16px; white-space: nowrap;
-      animation: marquee-scroll 8s linear infinite;
+      animation: marquee-scroll 12s linear infinite;
+      width: max-content;
     }
     .p-marquee-item { font-size: 13px; font-weight: 600; color: var(--gray-500); }
     .p-marquee-dot { color: var(--gray-300); }
@@ -745,6 +764,135 @@
     /* Counter */
     .p-counter { font-variant-numeric: tabular-nums; color: var(--gray-950); }
 
+    /* ═══ COMPONENT DETAIL MODAL ═══ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(9,9,11,0.5);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal-content {
+      background: var(--white); border-radius: 20px;
+      width: 100%; max-width: 640px; max-height: 85vh;
+      overflow-y: auto; position: relative;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+      transform: translateY(20px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.open .modal-content {
+      transform: translateY(0) scale(1); opacity: 1;
+    }
+    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar-track { background: transparent; }
+    .modal-content::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+    .modal-header {
+      padding: 28px 28px 0; display: flex; justify-content: space-between;
+      align-items: flex-start; position: sticky; top: 0;
+      background: var(--white); z-index: 1; border-radius: 20px 20px 0 0;
+    }
+    .modal-title-area { flex: 1; }
+    .modal-comp-name {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--gray-950); margin-bottom: 6px;
+    }
+    .modal-comp-desc {
+      font-size: 14px; color: var(--gray-400); line-height: 1.5;
+    }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 10px; border: none;
+      background: var(--gray-100); color: var(--gray-500);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: all 0.2s; flex-shrink: 0; margin-left: 16px;
+    }
+    .modal-close:hover { background: var(--gray-200); color: var(--gray-700); }
+    .modal-body { padding: 24px 28px 28px; }
+    .modal-section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--gray-400); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .modal-section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--gray-100);
+    }
+    .modal-code-block {
+      background: #0C0C0E; border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06); margin-bottom: 24px;
+    }
+    .modal-code-header {
+      padding: 10px 16px; display: flex; justify-content: space-between;
+      align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .modal-code-lang {
+      font-size: 11px; font-family: var(--mono); color: rgba(255,255,255,0.3);
+    }
+    .modal-code-copy {
+      font-size: 11px; font-family: var(--font); font-weight: 500;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4); padding: 4px 10px; border-radius: 6px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .modal-code-copy:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+    .modal-code-copy.copied { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.2); color: var(--emerald); }
+    .modal-code-body {
+      padding: 16px 20px; overflow-x: auto;
+    }
+    .modal-code-body pre {
+      font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+      color: rgba(255,255,255,0.85); white-space: pre; margin: 0;
+    }
+    .modal-props {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .modal-prop {
+      display: flex; align-items: baseline; padding: 12px 16px;
+      font-size: 13px; border-bottom: 1px solid var(--gray-100);
+      transition: background 0.15s;
+    }
+    .modal-prop:last-child { border-bottom: none; }
+    .modal-prop:hover { background: var(--gray-50); }
+    .modal-prop-name {
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--indigo); background: rgba(99,102,241,0.06);
+      padding: 2px 8px; border-radius: 4px; margin-right: 12px;
+      white-space: nowrap;
+    }
+    .modal-prop-type {
+      font-family: var(--mono); font-size: 11px; color: var(--gray-400);
+      margin-right: 12px; white-space: nowrap;
+    }
+    .modal-prop-desc {
+      font-size: 12.5px; color: var(--gray-500); flex: 1;
+    }
+    .modal-tags {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .modal-tag {
+      font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 6px;
+      background: var(--gray-50); color: var(--gray-500); border: 1px solid var(--gray-100);
+    }
+    .modal-tag-accent { background: rgba(99,102,241,0.06); color: var(--indigo); border-color: rgba(99,102,241,0.12); }
+    .modal-npm-hint {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+      background: var(--gray-50); border-radius: 10px; border: 1px solid var(--gray-100);
+    }
+    .modal-npm-hint code {
+      font-family: var(--mono); font-size: 12px; color: var(--gray-600);
+    }
+    .modal-npm-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+
     /* ═══ MOBILE ═══ */
     .mobile-menu { display: none; background: none; border: none; cursor: pointer; color: var(--gray-600); padding: 4px; }
     @media (max-width: 768px) {
@@ -756,6 +904,10 @@
       .stat-value { font-size: 24px; }
       .hero { padding: 130px 20px 80px; }
       .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+      .modal-overlay { padding: 12px; align-items: flex-end; }
+      .modal-content { max-height: 90vh; border-radius: 20px 20px 0 0; }
+      .modal-prop { flex-wrap: wrap; gap: 4px; }
+      .modal-prop-type { width: 100%; margin-left: 0; }
     }
     @media (max-width: 480px) {
       .stats-inner { flex-direction: column; gap: 16px; }
@@ -1166,7 +1318,7 @@
         </div>
 
         <div class="comp-card reveal reveal-delay-1">
-          <div class="comp-preview" style="overflow:hidden;width:100%">
+          <div class="comp-preview" style="overflow:hidden;width:100%;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)">
             <div class="p-marquee">
               <span class="p-marquee-item">React Native</span>
               <span class="p-marquee-dot">&#183;</span>
@@ -1178,11 +1330,19 @@
               <span class="p-marquee-dot">&#183;</span>
               <span class="p-marquee-item">Animated</span>
               <span class="p-marquee-dot">&#183;</span>
+              <span class="p-marquee-item">Themeable</span>
+              <span class="p-marquee-dot">&#183;</span>
               <span class="p-marquee-item">React Native</span>
               <span class="p-marquee-dot">&#183;</span>
               <span class="p-marquee-item">TypeScript</span>
               <span class="p-marquee-dot">&#183;</span>
               <span class="p-marquee-item">Open Source</span>
+              <span class="p-marquee-dot">&#183;</span>
+              <span class="p-marquee-item">Accessible</span>
+              <span class="p-marquee-dot">&#183;</span>
+              <span class="p-marquee-item">Animated</span>
+              <span class="p-marquee-dot">&#183;</span>
+              <span class="p-marquee-item">Themeable</span>
               <span class="p-marquee-dot">&#183;</span>
             </div>
           </div>
@@ -1299,6 +1459,48 @@
     </div>
   </section>
 
+  <!-- COMPONENT DETAIL MODAL -->
+  <div class="modal-overlay" id="compModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-area">
+          <div class="modal-comp-name" id="modalName"></div>
+          <div class="modal-comp-desc" id="modalDesc"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tags" id="modalTags"></div>
+
+        <div class="modal-section-label">Import</div>
+        <div class="modal-code-block">
+          <div class="modal-code-header">
+            <span class="modal-code-lang">tsx</span>
+            <button class="modal-code-copy" onclick="copyCode(this, 'importCode')">Copy</button>
+          </div>
+          <div class="modal-code-body"><pre id="importCode"></pre></div>
+        </div>
+
+        <div class="modal-section-label">Usage</div>
+        <div class="modal-code-block">
+          <div class="modal-code-header">
+            <span class="modal-code-lang">tsx</span>
+            <button class="modal-code-copy" onclick="copyCode(this, 'usageCode')">Copy</button>
+          </div>
+          <div class="modal-code-body"><pre id="usageCode"></pre></div>
+        </div>
+
+        <div class="modal-section-label">Key Props</div>
+        <div class="modal-props" id="modalProps"></div>
+
+        <div class="modal-npm-hint">
+          <div class="modal-npm-icon">N</div>
+          <code>import { <span id="modalImportName"></span> } from 'nova-native-ui'</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
@@ -1312,11 +1514,577 @@
   </footer>
 
   <script>
-    // Navbar scroll
+    // ═══ COMPONENT DATA ═══
+    const COMPONENTS = {
+      Button: {
+        desc: 'Configurable button with multiple variants, sizes, colors, and loading state support.',
+        tags: ['Core', 'Interactive', 'Animated'],
+        import: `import { Button } from 'nova-native-ui';`,
+        usage: `<Button
+  variant="solid"
+  color="primary"
+  size="md"
+  onPress={() => console.log('pressed')}
+>
+  Get Started
+</Button>
+
+<Button variant="outline" color="secondary">
+  Cancel
+</Button>
+
+<Button variant="ghost" loading>
+  Saving...
+</Button>`,
+        props: [
+          ['variant', '"solid" | "outline" | "ghost" | "soft"', 'Button style variant'],
+          ['color', '"primary" | "secondary" | "success" | "danger" | "warning" | "info"', 'Color scheme'],
+          ['size', '"sm" | "md" | "lg"', 'Button size'],
+          ['loading', 'boolean', 'Show spinner and disable'],
+          ['fullWidth', 'boolean', 'Stretch to container width'],
+          ['onPress', '() => void', 'Press handler'],
+        ]
+      },
+      Input: {
+        desc: 'Flexible text input with label, helper text, error state, and multiple variants.',
+        tags: ['Form', 'Core'],
+        import: `import { Input } from 'nova-native-ui';`,
+        usage: `<Input
+  label="Email"
+  placeholder="you@example.com"
+  variant="outlined"
+/>
+
+<Input
+  label="Password"
+  secureTextEntry
+  error="Must be at least 8 characters"
+/>`,
+        props: [
+          ['variant', '"outlined" | "filled" | "underlined"', 'Visual style'],
+          ['label', 'string', 'Floating label text'],
+          ['placeholder', 'string', 'Placeholder text'],
+          ['error', 'string', 'Error message (turns red)'],
+          ['helperText', 'string', 'Helper text below input'],
+          ['secureTextEntry', 'boolean', 'Password mode'],
+        ]
+      },
+      Avatar: {
+        desc: 'Circular avatar with image, initials fallback, and multiple sizes.',
+        tags: ['Data Display', 'Core'],
+        import: `import { Avatar } from 'nova-native-ui';`,
+        usage: `<Avatar
+  source={{ uri: 'https://...' }}
+  size="md"
+/>
+
+<Avatar
+  initials="IB"
+  color="#6366F1"
+  size="lg"
+/>`,
+        props: [
+          ['source', 'ImageSourcePropType', 'Image source'],
+          ['initials', 'string', 'Fallback initials (1-2 chars)'],
+          ['size', '"xs" | "sm" | "md" | "lg" | "xl"', 'Avatar size'],
+          ['color', 'string', 'Background color for initials'],
+        ]
+      },
+      Badge: {
+        desc: 'Small status indicator with 3 variants, 6 color options, and optional dot mode.',
+        tags: ['Data Display', 'Compact'],
+        import: `import { Badge } from 'nova-native-ui';`,
+        usage: `<Badge color="success">Active</Badge>
+<Badge color="danger" variant="outline">Critical</Badge>
+<Badge dot color="warning" />`,
+        props: [
+          ['color', '"primary" | "secondary" | "success" | "danger" | "warning" | "info"', 'Badge color'],
+          ['variant', '"filled" | "outline" | "soft"', 'Visual style'],
+          ['dot', 'boolean', 'Show as small dot indicator'],
+          ['size', '"sm" | "md" | "lg"', 'Badge size'],
+        ]
+      },
+      Chip: {
+        desc: 'Selectable chip with closable, icon support. Great for tags and filters.',
+        tags: ['Form', 'Interactive'],
+        import: `import { Chip } from 'nova-native-ui';`,
+        usage: `<Chip
+  selected={true}
+  onPress={() => toggle()}
+>
+  React Native
+</Chip>
+
+<Chip
+  closable
+  onClose={() => remove()}
+>
+  TypeScript
+</Chip>`,
+        props: [
+          ['selected', 'boolean', 'Whether chip is selected'],
+          ['closable', 'boolean', 'Show close/X button'],
+          ['onPress', '() => void', 'Tap handler'],
+          ['onClose', '() => void', 'Close button handler'],
+          ['icon', 'ReactNode', 'Leading icon element'],
+        ]
+      },
+      Switch: {
+        desc: 'Animated toggle switch with smooth spring transition and multiple colors.',
+        tags: ['Form', 'Animated'],
+        import: `import { Switch } from 'nova-native-ui';`,
+        usage: `const [on, setOn] = useState(false);
+
+<Switch
+  value={on}
+  onValueChange={setOn}
+  color="primary"
+  size="md"
+/>`,
+        props: [
+          ['value', 'boolean', 'Current toggle state'],
+          ['onValueChange', '(val: boolean) => void', 'State change handler'],
+          ['color', '"primary" | "secondary" | "success" | "danger" | "warning"', 'Active track color'],
+          ['size', '"sm" | "md" | "lg"', 'Switch size'],
+          ['disabled', 'boolean', 'Disable interaction'],
+        ]
+      },
+      Card: {
+        desc: 'Container with 3 variants — elevated, outlined, or filled — with customizable padding and radius.',
+        tags: ['Layout', 'Core'],
+        import: `import { Card } from 'nova-native-ui';`,
+        usage: `<Card variant="elevated" padding="lg">
+  <NovaText variant="h3">Title</NovaText>
+  <NovaText>Card content here.</NovaText>
+</Card>
+
+<Card variant="outlined">
+  <Button>Action</Button>
+</Card>`,
+        props: [
+          ['variant', '"elevated" | "outlined" | "filled"', 'Card visual style'],
+          ['padding', '"none" | "sm" | "md" | "lg" | "xl"', 'Inner padding'],
+          ['radius', '"sm" | "md" | "lg"', 'Border radius'],
+          ['onPress', '() => void', 'Make card pressable'],
+        ]
+      },
+      Checkbox: {
+        desc: 'Animated checkbox with label support, checkmark animation, and 3 size options.',
+        tags: ['Form', 'Animated'],
+        import: `import { Checkbox } from 'nova-native-ui';`,
+        usage: `const [checked, setChecked] = useState(false);
+
+<Checkbox
+  checked={checked}
+  onChange={setChecked}
+  label="I agree to the terms"
+  size="md"
+/>`,
+        props: [
+          ['checked', 'boolean', 'Checked state'],
+          ['onChange', '(val: boolean) => void', 'Change handler'],
+          ['label', 'string', 'Label text'],
+          ['size', '"sm" | "md" | "lg"', 'Checkbox size'],
+          ['color', 'string', 'Check color when active'],
+        ]
+      },
+      Toast: {
+        desc: 'Non-blocking notification with 4 types, auto-dismiss, and animated entrance.',
+        tags: ['Overlay', 'Animated'],
+        import: `import { useToast } from 'nova-native-ui';`,
+        usage: `const toast = useToast();
+
+toast.show({
+  type: 'success',
+  title: 'Saved!',
+  message: 'Your changes have been saved.',
+  duration: 3000,
+});
+
+toast.show({
+  type: 'error',
+  title: 'Failed',
+  message: 'Something went wrong.',
+});`,
+        props: [
+          ['type', '"success" | "error" | "warning" | "info"', 'Toast style'],
+          ['title', 'string', 'Toast title'],
+          ['message', 'string', 'Description text'],
+          ['duration', 'number', 'Auto-dismiss time (ms)'],
+          ['position', '"top" | "bottom"', 'Toast position'],
+        ]
+      },
+      Skeleton: {
+        desc: 'Shimmer loading placeholder with multiple shape presets for content loading states.',
+        tags: ['Utility', 'Animated'],
+        import: `import { Skeleton } from 'nova-native-ui';`,
+        usage: `<Skeleton variant="text" width="80%" />
+<Skeleton variant="circular" size={48} />
+<Skeleton
+  variant="rectangular"
+  width="100%"
+  height={120}
+  radius={12}
+/>`,
+        props: [
+          ['variant', '"text" | "circular" | "rectangular"', 'Skeleton shape'],
+          ['width', 'number | string', 'Element width'],
+          ['height', 'number | string', 'Element height'],
+          ['size', 'number', 'Size for circular variant'],
+          ['radius', 'number', 'Border radius'],
+        ]
+      },
+      Spinner: {
+        desc: 'Rotating loading indicator with customizable size and color.',
+        tags: ['Utility', 'Animated'],
+        import: `import { Spinner } from 'nova-native-ui';`,
+        usage: `<Spinner size="md" color="primary" />
+<Spinner size="lg" color="#8B5CF6" />
+<Spinner size="sm" />`,
+        props: [
+          ['size', '"sm" | "md" | "lg"', 'Spinner diameter'],
+          ['color', 'string', 'Spinner accent color'],
+        ]
+      },
+      IconButton: {
+        desc: 'Compact button for icon-only actions with 4 visual variants.',
+        tags: ['Core', 'Interactive'],
+        import: `import { IconButton } from 'nova-native-ui';`,
+        usage: `<IconButton
+  variant="solid"
+  onPress={handleLike}
+  icon={<HeartIcon />}
+/>
+
+<IconButton
+  variant="outline"
+  size="lg"
+  icon={<EditIcon />}
+/>`,
+        props: [
+          ['variant', '"solid" | "outline" | "ghost" | "soft"', 'Button style'],
+          ['icon', 'ReactNode', 'Icon element to render'],
+          ['size', '"sm" | "md" | "lg"', 'Button size'],
+          ['onPress', '() => void', 'Press handler'],
+          ['rounded', 'boolean', 'Fully circular shape'],
+        ]
+      },
+      Tabs: {
+        desc: 'Tab navigation with underline, pill, and soft variants. Supports animated indicator.',
+        tags: ['Navigation', 'Animated'],
+        import: `import { Tabs } from 'nova-native-ui';`,
+        usage: `const [tab, setTab] = useState(0);
+
+<Tabs
+  tabs={['Home', 'Explore', 'Profile']}
+  activeIndex={tab}
+  onChange={setTab}
+  variant="underline"
+/>`,
+        props: [
+          ['tabs', 'string[]', 'Tab labels array'],
+          ['activeIndex', 'number', 'Current active tab index'],
+          ['onChange', '(index: number) => void', 'Tab change handler'],
+          ['variant', '"underline" | "pill" | "soft"', 'Tab style variant'],
+        ]
+      },
+      SearchBar: {
+        desc: 'Search input with built-in clear button and optional loading indicator.',
+        tags: ['Form', 'Interactive'],
+        import: `import { SearchBar } from 'nova-native-ui';`,
+        usage: `const [query, setQuery] = useState('');
+
+<SearchBar
+  value={query}
+  onChangeText={setQuery}
+  placeholder="Search components..."
+  loading={isSearching}
+/>`,
+        props: [
+          ['value', 'string', 'Search text value'],
+          ['onChangeText', '(text: string) => void', 'Text change handler'],
+          ['placeholder', 'string', 'Placeholder text'],
+          ['loading', 'boolean', 'Show loading spinner'],
+          ['onClear', '() => void', 'Clear button handler'],
+        ]
+      },
+      Accordion: {
+        desc: 'Expandable/collapsible sections with smooth animated height transitions.',
+        tags: ['Layout', 'Animated'],
+        import: `import { Accordion } from 'nova-native-ui';`,
+        usage: `<Accordion
+  sections={[
+    {
+      title: 'What is nova-native-ui?',
+      content: 'A React Native UI library.',
+    },
+    {
+      title: 'Is it free?',
+      content: 'Yes, MIT licensed.',
+    },
+  ]}
+  allowMultiple={false}
+/>`,
+        props: [
+          ['sections', 'AccordionSection[]', 'Array of { title, content }'],
+          ['allowMultiple', 'boolean', 'Allow multiple sections open'],
+          ['defaultOpen', 'number[]', 'Initially open section indices'],
+        ]
+      },
+      Progress: {
+        desc: 'Linear and circular progress indicators with determinate and indeterminate modes.',
+        tags: ['Utility', 'Animated'],
+        import: `import { Progress } from 'nova-native-ui';`,
+        usage: `<Progress value={72} color="primary" />
+
+<Progress
+  variant="circular"
+  value={85}
+  size={48}
+  showValue
+/>
+
+<Progress indeterminate color="success" />`,
+        props: [
+          ['value', 'number', 'Progress value (0-100)'],
+          ['variant', '"linear" | "circular"', 'Progress shape'],
+          ['indeterminate', 'boolean', 'Infinite animation mode'],
+          ['color', 'string', 'Progress fill color'],
+          ['showValue', 'boolean', 'Display percentage text'],
+        ]
+      },
+      Slider: {
+        desc: 'Draggable slider with step support, value display, and touch-friendly thumb.',
+        tags: ['Form', 'Gesture'],
+        import: `import { Slider } from 'nova-native-ui';`,
+        usage: `const [volume, setVolume] = useState(60);
+
+<Slider
+  value={volume}
+  onValueChange={setVolume}
+  min={0}
+  max={100}
+  step={5}
+  showValue
+/>`,
+        props: [
+          ['value', 'number', 'Current slider value'],
+          ['onValueChange', '(val: number) => void', 'Value change handler'],
+          ['min', 'number', 'Minimum value'],
+          ['max', 'number', 'Maximum value'],
+          ['step', 'number', 'Step increment'],
+          ['showValue', 'boolean', 'Display value tooltip'],
+        ]
+      },
+      OTPInput: {
+        desc: 'PIN/OTP code input with individual animated cells and auto-advance.',
+        tags: ['Form', 'Animated'],
+        import: `import { OTPInput } from 'nova-native-ui';`,
+        usage: `const [code, setCode] = useState('');
+
+<OTPInput
+  length={6}
+  value={code}
+  onChange={setCode}
+  autoFocus
+/>`,
+        props: [
+          ['length', 'number', 'Number of cells (4 or 6)'],
+          ['value', 'string', 'Current OTP value'],
+          ['onChange', '(val: string) => void', 'Value change handler'],
+          ['autoFocus', 'boolean', 'Auto-focus first cell'],
+          ['secure', 'boolean', 'Mask entered digits'],
+        ]
+      },
+      BottomSheet: {
+        desc: 'Draggable bottom sheet with snap points and backdrop. Uses PanResponder for gestures.',
+        tags: ['Overlay', 'Gesture'],
+        import: `import { BottomSheet } from 'nova-native-ui';`,
+        usage: `const [visible, setVisible] = useState(false);
+
+<BottomSheet
+  visible={visible}
+  onClose={() => setVisible(false)}
+  snapPoints={['auto', '50%', '90%']}
+>
+  <NovaText variant="h3">Sheet Content</NovaText>
+  <Button onPress={() => setVisible(false)}>
+    Close
+  </Button>
+</BottomSheet>`,
+        props: [
+          ['visible', 'boolean', 'Show/hide the sheet'],
+          ['onClose', '() => void', 'Close handler'],
+          ['snapPoints', 'string[]', 'Snap positions array'],
+          ['children', 'ReactNode', 'Sheet body content'],
+        ]
+      },
+      FAB: {
+        desc: 'Floating Action Button with standard and extended variants. Positioned absolutely.',
+        tags: ['Core', 'Interactive'],
+        import: `import { FAB } from 'nova-native-ui';`,
+        usage: `<FAB
+  icon={<PlusIcon />}
+  onPress={handleCreate}
+  position="bottom-right"
+/>
+
+<FAB
+  icon={<PlusIcon />}
+  label="Create"
+  extended
+  color="secondary"
+/>`,
+        props: [
+          ['icon', 'ReactNode', 'FAB icon element'],
+          ['label', 'string', 'Extended label text'],
+          ['extended', 'boolean', 'Use extended (wider) style'],
+          ['position', '"bottom-right" | "bottom-left" | "bottom-center"', 'Screen position'],
+          ['onPress', '() => void', 'Press handler'],
+        ]
+      },
+      GlowCard: {
+        desc: 'Card with animated gradient border glow effect. Eye-catching for feature highlights.',
+        tags: ['Animated', 'Decorative'],
+        import: `import { GlowCard } from 'nova-native-ui';`,
+        usage: `<GlowCard
+  colors={['#6366F1', '#8B5CF6', '#0EA5E9']}
+  glowIntensity={0.4}
+>
+  <NovaText variant="h3">Premium</NovaText>
+  <NovaText>Upgrade your plan</NovaText>
+</GlowCard>`,
+        props: [
+          ['colors', 'string[]', 'Gradient border colors'],
+          ['glowIntensity', 'number', 'Glow opacity (0-1)'],
+          ['animated', 'boolean', 'Enable pulse animation'],
+          ['children', 'ReactNode', 'Card content'],
+        ]
+      },
+      AnimatedNumber: {
+        desc: 'Number ticker that animates counting transitions with easing.',
+        tags: ['Animated', 'Data Display'],
+        import: `import { AnimatedNumber } from 'nova-native-ui';`,
+        usage: `<AnimatedNumber
+  value={12847}
+  duration={1500}
+  prefix="$"
+/>
+
+<AnimatedNumber
+  value={99.5}
+  suffix="%"
+  decimals={1}
+/>`,
+        props: [
+          ['value', 'number', 'Target number to display'],
+          ['duration', 'number', 'Animation duration (ms)'],
+          ['prefix', 'string', 'Text before number'],
+          ['suffix', 'string', 'Text after number'],
+          ['decimals', 'number', 'Decimal places count'],
+        ]
+      },
+      Marquee: {
+        desc: 'Infinite horizontal scrolling text. Auto-pauses on press. No external deps.',
+        tags: ['Animated', 'Decorative'],
+        import: `import { Marquee } from 'nova-native-ui';`,
+        usage: `<Marquee speed={50} pauseOnPress>
+  <Chip>React Native</Chip>
+  <Chip>TypeScript</Chip>
+  <Chip>Open Source</Chip>
+  <Chip>Accessible</Chip>
+</Marquee>`,
+        props: [
+          ['speed', 'number', 'Pixels per second'],
+          ['pauseOnPress', 'boolean', 'Pause animation on touch'],
+          ['direction', '"left" | "right"', 'Scroll direction'],
+          ['children', 'ReactNode', 'Scrolling content'],
+        ]
+      },
+      ShimmerButton: {
+        desc: 'Button with a sweeping shimmer highlight animation across its surface.',
+        tags: ['Animated', 'Interactive'],
+        import: `import { ShimmerButton } from 'nova-native-ui';`,
+        usage: `<ShimmerButton
+  onPress={handleAction}
+  color="primary"
+>
+  Upgrade Now
+</ShimmerButton>`,
+        props: [
+          ['color', 'string', 'Button background color'],
+          ['shimmerColor', 'string', 'Shimmer highlight color'],
+          ['duration', 'number', 'Shimmer cycle duration (ms)'],
+          ['onPress', '() => void', 'Press handler'],
+        ]
+      },
+      GradientText: {
+        desc: 'Text with animated gradient color effect. Supports per-character and full-span modes.',
+        tags: ['Animated', 'Decorative'],
+        import: `import { GradientText } from 'nova-native-ui';`,
+        usage: `<GradientText
+  colors={['#6366F1', '#EC4899', '#0EA5E9']}
+  animated
+>
+  nova-native-ui
+</GradientText>`,
+        props: [
+          ['colors', 'string[]', 'Gradient color stops'],
+          ['animated', 'boolean', 'Enable shifting animation'],
+          ['style', 'TextStyle', 'Additional text styles'],
+        ]
+      },
+      StaggeredList: {
+        desc: 'List container that reveals children with sequential staggered animation.',
+        tags: ['Animated', 'Layout'],
+        import: `import { StaggeredList } from 'nova-native-ui';`,
+        usage: `<StaggeredList
+  animation="fadeUp"
+  stagger={100}
+>
+  <Card>First</Card>
+  <Card>Second</Card>
+  <Card>Third</Card>
+</StaggeredList>`,
+        props: [
+          ['animation', '"fadeUp" | "fadeLeft" | "scaleIn"', 'Animation type'],
+          ['stagger', 'number', 'Delay between items (ms)'],
+          ['duration', 'number', 'Each item anim duration (ms)'],
+          ['children', 'ReactNode[]', 'Items to stagger'],
+        ]
+      },
+      Ripple: {
+        desc: 'Material Design style touch ripple wrapper. Wraps any component to add ripple feedback.',
+        tags: ['Interactive', 'Animated'],
+        import: `import { Ripple } from 'nova-native-ui';`,
+        usage: `<Ripple onPress={handlePress}>
+  <Card variant="outlined">
+    <NovaText>Tap me!</NovaText>
+  </Card>
+</Ripple>
+
+<Ripple
+  color="rgba(99,102,241,0.3)"
+  onPress={handleAction}
+>
+  <View style={styles.listItem}>
+    <NovaText>List item</NovaText>
+  </View>
+</Ripple>`,
+        props: [
+          ['color', 'string', 'Ripple color (rgba recommended)'],
+          ['onPress', '() => void', 'Press handler'],
+          ['disabled', 'boolean', 'Disable ripple effect'],
+          ['children', 'ReactNode', 'Content to wrap'],
+        ]
+      }
+    };
+
+    // ═══ NAVBAR ═══
     const nav = document.getElementById('navbar');
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10));
 
-    // Copy install command
+    // ═══ COPY INSTALL ═══
     function copyInstall() {
       navigator.clipboard.writeText('npm install nova-native-ui');
       const btn = document.getElementById('copyBtn');
@@ -1325,18 +2093,15 @@
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
     }
 
-    // Scroll reveal
+    // ═══ SCROLL REVEAL ═══
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Animated counter
+    // ═══ ANIMATED STAT COUNTERS ═══
     function animateCount(el, target, duration) {
       const start = performance.now();
       const update = (now) => {
@@ -1347,7 +2112,6 @@
       };
       requestAnimationFrame(update);
     }
-
     const countObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1357,32 +2121,35 @@
         }
       });
     }, { threshold: 0.5 });
-
     document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
-    // Interactive switch toggles
+    // ═══ INTERACTIVE PREVIEWS ═══
     document.querySelectorAll('.p-switch').forEach(sw => {
-      sw.addEventListener('click', () => {
+      sw.addEventListener('click', (e) => {
+        e.stopPropagation();
         sw.classList.toggle('p-switch-on');
         sw.classList.toggle('p-switch-off');
       });
     });
-
-    // Interactive checkbox toggles
     document.querySelectorAll('.p-check-row').forEach(row => {
       row.style.cursor = 'pointer';
+      row.addEventListener('click', (e) => e.stopPropagation());
     });
-
-    // Interactive chip selection
     document.querySelectorAll('.p-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
         chip.classList.toggle('p-chip-active');
         chip.classList.toggle('p-chip-inactive');
       });
     });
+    document.querySelectorAll('.p-input').forEach(el => {
+      el.addEventListener('click', (e) => e.stopPropagation());
+      el.addEventListener('focus', (e) => e.stopPropagation());
+    });
 
-    // Ripple effect
+    // ═══ RIPPLE EFFECT ═══
     function rippleEffect(e, el) {
+      e.stopPropagation();
       const rect = el.getBoundingClientRect();
       const circle = document.createElement('div');
       const size = Math.max(rect.width, rect.height) * 2;
@@ -1394,7 +2161,7 @@
       setTimeout(() => circle.remove(), 600);
     }
 
-    // Animated counter in component preview
+    // ═══ PREVIEW COUNTER ═══
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1416,21 +2183,90 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('.p-counter').forEach(el => counterObserver.observe(el));
 
-    // Accordion toggle
+    // ═══ ACCORDION ═══
     document.querySelectorAll('.p-accordion-header').forEach(header => {
-      header.addEventListener('click', () => {
+      header.addEventListener('click', (e) => {
+        e.stopPropagation();
         const item = header.parentElement;
         const body = item.querySelector('.p-accordion-body');
         const chevron = header.querySelector('.p-accordion-chevron');
         if (body) {
           body.style.display = body.style.display === 'none' ? 'block' : 'none';
           chevron.style.transform = body.style.display === 'none' ? 'rotate(0deg)' : 'rotate(90deg)';
-        } else {
-          item.classList.toggle('p-accordion-open');
-          if (chevron) chevron.style.transform = item.classList.contains('p-accordion-open') ? 'rotate(90deg)' : 'rotate(0deg)';
         }
       });
     });
+
+    // ═══ COMPONENT CARD ARROWS + CLICK ═══
+    document.querySelectorAll('.comp-card').forEach(card => {
+      const meta = card.querySelector('.comp-meta');
+      if (meta) {
+        const arrow = document.createElement('span');
+        arrow.className = 'comp-meta-arrow';
+        arrow.innerHTML = '&#8594;';
+        meta.appendChild(arrow);
+      }
+
+      card.addEventListener('click', () => {
+        const nameEl = card.querySelector('.comp-name');
+        if (!nameEl) return;
+        const name = nameEl.textContent.trim();
+        if (COMPONENTS[name]) openModal(name);
+      });
+    });
+
+    // ═══ MODAL ═══
+    const modal = document.getElementById('compModal');
+
+    function openModal(name) {
+      const comp = COMPONENTS[name];
+      if (!comp) return;
+
+      document.getElementById('modalName').textContent = name;
+      document.getElementById('modalDesc').textContent = comp.desc;
+      document.getElementById('modalImportName').textContent = name;
+
+      const tagsEl = document.getElementById('modalTags');
+      tagsEl.innerHTML = comp.tags.map(t =>
+        `<span class="modal-tag${t === 'Animated' || t === 'Interactive' ? ' modal-tag-accent' : ''}">${t}</span>`
+      ).join('');
+
+      document.getElementById('importCode').textContent = comp.import;
+      document.getElementById('usageCode').textContent = comp.usage;
+
+      const propsEl = document.getElementById('modalProps');
+      propsEl.innerHTML = comp.props.map(([n, t, d]) =>
+        `<div class="modal-prop">
+          <span class="modal-prop-name">${n}</span>
+          <span class="modal-prop-type">${t}</span>
+          <span class="modal-prop-desc">${d}</span>
+        </div>`
+      ).join('');
+
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function copyCode(btn, preId) {
+      const code = document.getElementById(preId).textContent;
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }
   </script>
 </body>
 </html>
