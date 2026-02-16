@@ -60,6 +60,7 @@ export {
   GradientText,
   StaggeredList,
   Ripple,
+  LogoCloud,
 } from './components';
 
 export type {
@@ -104,6 +105,7 @@ export type {
   GradientTextProps,
   StaggeredListProps, StaggerAnimation,
   RippleProps,
+  LogoCloudProps, LogoItem, LogoCloudVariant, LogoCloudColumns, LogoCloudSize,
 } from './components';
 
 // Utils

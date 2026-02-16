@@ -104,3 +104,6 @@ export type { StaggeredListProps, StaggerAnimation } from './StaggeredList';
 
 export { Ripple } from './Ripple';
 export type { RippleProps } from './Ripple';
+
+export { LogoCloud } from './LogoCloud';
+export type { LogoCloudProps, LogoItem, LogoCloudVariant, LogoCloudColumns, LogoCloudSize } from './LogoCloud';

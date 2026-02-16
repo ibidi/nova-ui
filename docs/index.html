@@ -397,6 +397,16 @@
     .p-badge-blue { background: #EFF6FF; color: #2563EB; }
     .p-badge-amber { background: #FFFBEB; color: #D97706; }
     .p-badge-violet { background: #F5F3FF; color: #7C3AED; }
+    .p-badge-outline { background: transparent !important; border: 1.5px solid currentColor; }
+    .p-badge-dot {
+      width: 8px; height: 8px; padding: 0; border-radius: 50%;
+      font-size: 0; display: inline-block;
+    }
+    .p-badge-dot.p-badge-green { background: #059669; }
+    .p-badge-dot.p-badge-red { background: #DC2626; }
+    .p-badge-dot.p-badge-blue { background: #2563EB; }
+    .p-badge-dot.p-badge-amber { background: #D97706; }
+    .p-badge-dot.p-badge-violet { background: #7C3AED; }
 
     .p-avatar {
       width: 40px; height: 40px; border-radius: 50%;
@@ -764,6 +774,95 @@
     /* Counter */
     .p-counter { font-variant-numeric: tabular-nums; color: var(--gray-950); }
 
+    /* ═══ LOGO CLOUD PREVIEW ═══ */
+    .p-logocloud {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; width: 100%;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .p-logocloud-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 10px 16px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer; animation: lc-fadeIn 0.5s ease both;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes lc-fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .p-logocloud-item:hover {
+      border-color: var(--indigo); transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.12);
+    }
+    .p-lc-blur {
+      opacity: 0.5; filter: blur(1px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .p-lc-blur:hover { opacity: 1; filter: blur(0px); transform: translateY(-3px) scale(1.05); }
+    .p-lc-spotlight .p-logocloud-item {
+      border: 1.5px solid var(--gray-100); position: relative; overflow: hidden;
+    }
+    .p-lc-spotlight .p-logocloud-item::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(120px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(99,102,241,0.1), transparent 70%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .p-lc-spotlight .p-logocloud-item:hover::before { opacity: 1; }
+    .p-lc-spotlight .p-logocloud-item:hover {
+      border-color: rgba(99,102,241,0.3);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.1);
+    }
+    .p-lc-marquee-wrapper {
+      width: 100%; overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+    }
+    .p-lc-marquee-track {
+      display: flex; gap: 10px; width: max-content;
+      animation: lc-marquee 10s linear infinite;
+    }
+    @keyframes lc-marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .p-lc-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .p-lc-name { font-size: 12.5px; font-weight: 600; color: var(--gray-600); white-space: nowrap; }
+    .p-lc-variant-switch {
+      display: flex; gap: 4px; margin-top: 16px;
+      background: var(--gray-50); border-radius: 8px; padding: 3px;
+      border: 1px solid var(--gray-100);
+    }
+    .p-lc-vbtn {
+      font-size: 10.5px; font-weight: 600; font-family: var(--font);
+      padding: 5px 10px; border-radius: 6px; border: none;
+      background: transparent; color: var(--gray-400);
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .p-lc-vbtn:hover { color: var(--gray-600); }
+    .p-lc-vbtn-active { background: var(--white); color: var(--indigo); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+
+    /* ═══ INTERACTIVE CONTROLS ═══ */
+    .comp-controls {
+      display: flex; gap: 4px; padding: 8px 16px;
+      border-top: 1px solid var(--gray-100);
+      background: var(--gray-50); flex-wrap: wrap;
+    }
+    .comp-control-btn {
+      font-size: 10px; font-weight: 600; font-family: var(--font);
+      padding: 4px 8px; border-radius: 5px;
+      border: 1px solid var(--gray-200); background: var(--white);
+      color: var(--gray-500); cursor: pointer; transition: all 0.15s;
+    }
+    .comp-control-btn:hover { border-color: var(--gray-300); color: var(--gray-700); }
+    .comp-control-btn.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+
     /* ═══ COMPONENT DETAIL MODAL ═══ */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 200;
@@ -1052,12 +1151,19 @@
       </div>
 
       <div class="component-grid">
-        <div class="comp-card reveal">
-          <div class="comp-preview">
+        <div class="comp-card reveal" id="btn-card">
+          <div class="comp-preview" id="btn-preview">
             <button class="p-btn p-btn-solid">Primary</button>
             <button class="p-btn p-btn-outline">Outline</button>
             <button class="p-btn p-btn-ghost">Ghost</button>
             <button class="p-btn p-btn-soft">Soft</button>
+          </div>
+          <div class="comp-controls" onclick="event.stopPropagation()">
+            <button class="comp-control-btn active" onclick="changeButtonColor('indigo', this)">Indigo</button>
+            <button class="comp-control-btn" onclick="changeButtonColor('violet', this)">Violet</button>
+            <button class="comp-control-btn" onclick="changeButtonColor('emerald', this)">Emerald</button>
+            <button class="comp-control-btn" onclick="changeButtonColor('rose', this)">Rose</button>
+            <button class="comp-control-btn" onclick="changeButtonColor('sky', this)">Sky</button>
           </div>
           <div class="comp-meta"><span class="comp-name">Button</span><span class="comp-desc">4 variants · 6 colors · 3 sizes</span></div>
         </div>
@@ -1085,13 +1191,18 @@
           <div class="comp-meta"><span class="comp-name">Avatar</span><span class="comp-desc">Image or initials · 5 sizes</span></div>
         </div>
 
-        <div class="comp-card reveal">
-          <div class="comp-preview" style="gap:8px">
+        <div class="comp-card reveal" id="badge-card">
+          <div class="comp-preview" style="gap:8px" id="badge-preview">
             <span class="p-badge p-badge-green">Active</span>
             <span class="p-badge p-badge-red">Critical</span>
             <span class="p-badge p-badge-blue">In Review</span>
             <span class="p-badge p-badge-amber">Pending</span>
             <span class="p-badge p-badge-violet">Beta</span>
+          </div>
+          <div class="comp-controls" onclick="event.stopPropagation()">
+            <button class="comp-control-btn active" onclick="changeBadgeStyle('filled', this)">Filled</button>
+            <button class="comp-control-btn" onclick="changeBadgeStyle('outline', this)">Outline</button>
+            <button class="comp-control-btn" onclick="changeBadgeStyle('dot', this)">Dot</button>
           </div>
           <div class="comp-meta"><span class="comp-name">Badge</span><span class="comp-desc">3 variants · 6 colors · dot</span></div>
         </div>
@@ -1391,6 +1502,36 @@
             </div>
           </div>
           <div class="comp-meta"><span class="comp-name">Ripple</span><span class="comp-desc">Material touch · any wrapper</span></div>
+        </div>
+
+        <div class="comp-card reveal">
+          <div class="comp-preview" style="width:100%;overflow:hidden;padding:24px 16px">
+            <div class="p-logocloud">
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0s">
+                <div class="p-lc-icon" style="background:rgba(99,102,241,0.08);color:var(--indigo)">N</div>
+                <span class="p-lc-name">Nova UI</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.1s">
+                <div class="p-lc-icon" style="background:rgba(139,92,246,0.08);color:var(--violet)">E</div>
+                <span class="p-lc-name">Expo</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.2s">
+                <div class="p-lc-icon" style="background:rgba(14,165,233,0.08);color:var(--sky)">R</div>
+                <span class="p-lc-name">React</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.3s">
+                <div class="p-lc-icon" style="background:rgba(16,185,129,0.08);color:var(--emerald)">T</div>
+                <span class="p-lc-name">TypeScript</span>
+              </div>
+            </div>
+            <div class="p-lc-variant-switch">
+              <button class="p-lc-vbtn p-lc-vbtn-active" onclick="switchLogoVariant('grid', this)">Grid</button>
+              <button class="p-lc-vbtn" onclick="switchLogoVariant('marquee', this)">Marquee</button>
+              <button class="p-lc-vbtn" onclick="switchLogoVariant('blur', this)">Blur Flip</button>
+              <button class="p-lc-vbtn" onclick="switchLogoVariant('spotlight', this)">Spotlight</button>
+            </div>
+          </div>
+          <div class="comp-meta"><span class="comp-name">LogoCloud</span><span class="comp-desc">4 variants · marquee · spotlight</span></div>
         </div>
 
       </div>
@@ -2077,6 +2218,60 @@ toast.show({
           ['disabled', 'boolean', 'Disable ripple effect'],
           ['children', 'ReactNode', 'Content to wrap'],
         ]
+      },
+      LogoCloud: {
+        desc: 'Display partner/sponsor logos in 4 layout variants: grid, marquee, blur-flip, and spotlight. Inspired by Aceternity UI.',
+        tags: ['Animated', 'Layout', 'Decorative'],
+        import: `import { LogoCloud } from 'nova-native-ui';
+import type { LogoItem } from 'nova-native-ui';`,
+        usage: `const logos: LogoItem[] = [
+  { id: '1', name: 'Expo', uri: 'https://...' },
+  { id: '2', name: 'React', uri: 'https://...' },
+  { id: '3', name: 'TypeScript', uri: 'https://...' },
+];
+
+// Grid layout
+<LogoCloud
+  logos={logos}
+  variant="grid"
+  columns={4}
+  title="Trusted by the best"
+/>
+
+// Infinite scrolling marquee
+<LogoCloud
+  logos={logos}
+  variant="marquee"
+  marqueeSpeed={1.5}
+  pauseOnPress
+/>
+
+// Blur flip - logos reveal on press
+<LogoCloud
+  logos={logos}
+  variant="blur-flip"
+  showNames
+/>
+
+// Spotlight - glow on press
+<LogoCloud
+  logos={logos}
+  variant="spotlight"
+  showNames
+/>`,
+        props: [
+          ['logos', 'LogoItem[]', 'Array of { id, name, image?, uri? }'],
+          ['variant', '"grid" | "marquee" | "blur-flip" | "spotlight"', 'Layout variant'],
+          ['columns', '2 | 3 | 4 | 5 | 6', 'Grid columns (grid variant)'],
+          ['size', '"sm" | "md" | "lg"', 'Logo item size'],
+          ['title', 'string', 'Section title text'],
+          ['subtitle', 'string', 'Section subtitle text'],
+          ['showNames', 'boolean', 'Display logo names'],
+          ['marqueeSpeed', 'number', 'Scroll speed (marquee variant)'],
+          ['marqueeDirection', '"left" | "right"', 'Scroll direction'],
+          ['pauseOnPress', 'boolean', 'Pause marquee on touch'],
+          ['animated', 'boolean', 'Enable entry animations'],
+        ]
       }
     };
 
@@ -2266,6 +2461,97 @@ toast.show({
       btn.textContent = 'Copied!';
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }
+
+    // ═══ INTERACTIVE BUTTON COLOR CHANGER ═══
+    const BTN_COLORS = {
+      indigo: { solid: '#6366F1', hover: '#5558E6', rgb: '99,102,241' },
+      violet: { solid: '#8B5CF6', hover: '#7C3AED', rgb: '139,92,246' },
+      emerald: { solid: '#10B981', hover: '#059669', rgb: '16,185,129' },
+      rose: { solid: '#F43F5E', hover: '#E11D48', rgb: '244,63,94' },
+      sky: { solid: '#0EA5E9', hover: '#0284C7', rgb: '14,165,233' },
+    };
+    function changeButtonColor(color, el) {
+      const c = BTN_COLORS[color];
+      if (!c) return;
+      el.parentElement.querySelectorAll('.comp-control-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const preview = document.getElementById('btn-preview');
+      const btns = preview.querySelectorAll('.p-btn');
+      btns.forEach(btn => {
+        if (btn.classList.contains('p-btn-solid')) {
+          btn.style.background = c.solid; btn.style.color = '#fff';
+        } else if (btn.classList.contains('p-btn-outline')) {
+          btn.style.borderColor = c.solid; btn.style.color = c.solid; btn.style.background = 'transparent';
+        } else if (btn.classList.contains('p-btn-ghost')) {
+          btn.style.color = c.solid; btn.style.background = 'transparent';
+        } else if (btn.classList.contains('p-btn-soft')) {
+          btn.style.background = `rgba(${c.rgb},0.08)`; btn.style.color = c.solid;
+        }
+      });
+    }
+
+    // ═══ BADGE STYLE CHANGER ═══
+    const badgeColors = ['green', 'red', 'blue', 'amber', 'violet'];
+    const badgeNames = ['Active', 'Critical', 'In Review', 'Pending', 'Beta'];
+    function changeBadgeStyle(style, el) {
+      el.parentElement.querySelectorAll('.comp-control-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const preview = document.getElementById('badge-preview');
+      preview.innerHTML = '';
+      badgeColors.forEach((c, i) => {
+        const badge = document.createElement('span');
+        badge.className = `p-badge p-badge-${c}`;
+        if (style === 'outline') badge.classList.add('p-badge-outline');
+        if (style === 'dot') badge.classList.add('p-badge-dot');
+        badge.textContent = style === 'dot' ? '' : badgeNames[i];
+        preview.appendChild(badge);
+      });
+    }
+
+    // ═══ LOGOCLOUD VARIANT SWITCHER ═══
+    function switchLogoVariant(variant, el) {
+      el.parentElement.querySelectorAll('.p-lc-vbtn').forEach(b => b.classList.remove('p-lc-vbtn-active'));
+      el.classList.add('p-lc-vbtn-active');
+
+      const cloud = el.closest('.comp-preview').querySelector('.p-logocloud');
+      const logos = [
+        { letter: 'N', name: 'Nova UI', bg: 'rgba(99,102,241,0.08)', color: 'var(--indigo)' },
+        { letter: 'E', name: 'Expo', bg: 'rgba(139,92,246,0.08)', color: 'var(--violet)' },
+        { letter: 'R', name: 'React', bg: 'rgba(14,165,233,0.08)', color: 'var(--sky)' },
+        { letter: 'T', name: 'TypeScript', bg: 'rgba(16,185,129,0.08)', color: 'var(--emerald)' },
+      ];
+
+      const makeItem = (l, delay, extra) => `
+        <div class="p-logocloud-item ${extra || ''}" style="--delay:${delay}s"
+          ${variant === 'spotlight' ? 'onmousemove="lcSpotlight(event, this)"' : ''}>
+          <div class="p-lc-icon" style="background:${l.bg};color:${l.color}">${l.letter}</div>
+          <span class="p-lc-name">${l.name}</span>
+        </div>`;
+
+      cloud.className = 'p-logocloud' + (variant === 'spotlight' ? ' p-lc-spotlight' : '');
+
+      if (variant === 'marquee') {
+        const items = logos.map((l, i) => makeItem(l, i * 0.05, '')).join('');
+        cloud.innerHTML = `
+          <div class="p-lc-marquee-wrapper">
+            <div class="p-lc-marquee-track">
+              ${items}${items}
+            </div>
+          </div>`;
+      } else if (variant === 'blur') {
+        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, 'p-lc-blur')).join('');
+      } else if (variant === 'spotlight') {
+        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, '')).join('');
+      } else {
+        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, '')).join('');
+      }
+    }
+
+    function lcSpotlight(e, el) {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - rect.top) + 'px');
     }
   </script>
 </body>
