@@ -14,7 +14,7 @@ cd NovaUIExample
 2. Install nova-ui:
 
 ```bash
-npm install @ibidi/nova-ui
+npm install nova-native-ui
 ```
 
 3. Copy the `App.tsx` from this directory into your project root, replacing the default `App.tsx`.

@@ -15,9 +15,9 @@ A modern, customizable, and accessible React Native UI component library built w
 ## Installation
 
 ```bash
-npm install nova-ui
+npm install nova-native-ui
 # or
-yarn add nova-ui
+yarn add nova-native-ui
 ```
 
 ### Peer Dependencies
@@ -33,7 +33,7 @@ npm install react react-native
 Wrap your app with `ThemeProvider` and optionally `ToastProvider`:
 
 ```tsx
-import { ThemeProvider, ToastProvider } from 'nova-ui';
+import { ThemeProvider, ToastProvider } from 'nova-native-ui';
 
 export default function App() {
   return (
@@ -53,7 +53,7 @@ export default function App() {
 #### Button
 
 ```tsx
-import { Button } from 'nova-ui';
+import { Button } from 'nova-native-ui';
 
 <Button variant="solid" color="primary" size="md" onPress={() => {}}>
   Click Me
@@ -73,7 +73,7 @@ import { Button } from 'nova-ui';
 #### Text (NovaText)
 
 ```tsx
-import { NovaText } from 'nova-ui';
+import { NovaText } from 'nova-native-ui';
 
 <NovaText variant="h1">Heading 1</NovaText>
 <NovaText variant="body" color="secondary">Body text</NovaText>
@@ -85,7 +85,7 @@ import { NovaText } from 'nova-ui';
 #### Input
 
 ```tsx
-import { Input } from 'nova-ui';
+import { Input } from 'nova-native-ui';
 
 <Input
   variant="outline"
@@ -111,7 +111,7 @@ import { Input } from 'nova-ui';
 #### Card
 
 ```tsx
-import { Card } from 'nova-ui';
+import { Card } from 'nova-native-ui';
 
 <Card variant="elevated" padding="lg" rounded="xl">
   <NovaText>Card content</NovaText>
@@ -125,7 +125,7 @@ import { Card } from 'nova-ui';
 A flexible layout primitive with theme-aware spacing props.
 
 ```tsx
-import { Box } from 'nova-ui';
+import { Box } from 'nova-native-ui';
 
 <Box padding="md" direction="row" align="center" gap="sm" rounded="lg">
   <NovaText>Flexible box</NovaText>
@@ -137,7 +137,7 @@ import { Box } from 'nova-ui';
 #### Stack / HStack / VStack
 
 ```tsx
-import { VStack, HStack } from 'nova-ui';
+import { VStack, HStack } from 'nova-native-ui';
 
 <VStack spacing="md" align="stretch">
   <HStack spacing="sm" align="center">
@@ -150,7 +150,7 @@ import { VStack, HStack } from 'nova-ui';
 #### Divider
 
 ```tsx
-import { Divider } from 'nova-ui';
+import { Divider } from 'nova-native-ui';
 
 <Divider orientation="horizontal" spacing={16} />
 ```
@@ -162,7 +162,7 @@ import { Divider } from 'nova-ui';
 #### Avatar
 
 ```tsx
-import { Avatar } from 'nova-ui';
+import { Avatar } from 'nova-native-ui';
 
 <Avatar source={{ uri: 'https://example.com/photo.jpg' }} size="lg" />
 <Avatar name="John Doe" size="md" />
@@ -173,7 +173,7 @@ import { Avatar } from 'nova-ui';
 #### Badge
 
 ```tsx
-import { Badge, BadgeDot } from 'nova-ui';
+import { Badge, BadgeDot } from 'nova-native-ui';
 
 <Badge label="New" color="success" variant="solid" />
 <Badge label="3" color="error" size="sm" rounded />
@@ -183,7 +183,7 @@ import { Badge, BadgeDot } from 'nova-ui';
 #### Chip
 
 ```tsx
-import { Chip } from 'nova-ui';
+import { Chip } from 'nova-native-ui';
 
 <Chip label="React Native" variant="soft" color="primary" onPress={() => {}} />
 <Chip label="Removable" onClose={() => {}} />
@@ -197,7 +197,7 @@ import { Chip } from 'nova-ui';
 #### Switch (NovaSwitch)
 
 ```tsx
-import { NovaSwitch } from 'nova-ui';
+import { NovaSwitch } from 'nova-native-ui';
 
 <NovaSwitch
   value={enabled}
@@ -210,7 +210,7 @@ import { NovaSwitch } from 'nova-ui';
 #### Checkbox
 
 ```tsx
-import { Checkbox } from 'nova-ui';
+import { Checkbox } from 'nova-native-ui';
 
 <Checkbox
   checked={agreed}
@@ -223,7 +223,7 @@ import { Checkbox } from 'nova-ui';
 #### RadioGroup
 
 ```tsx
-import { RadioGroup } from 'nova-ui';
+import { RadioGroup } from 'nova-native-ui';
 
 <RadioGroup
   options={[
@@ -244,7 +244,7 @@ import { RadioGroup } from 'nova-ui';
 #### Modal (NovaModal)
 
 ```tsx
-import { NovaModal } from 'nova-ui';
+import { NovaModal } from 'nova-native-ui';
 
 <NovaModal
   visible={showModal}
@@ -262,7 +262,7 @@ import { NovaModal } from 'nova-ui';
 #### Toast
 
 ```tsx
-import { ToastProvider, useToast } from 'nova-ui';
+import { ToastProvider, useToast } from 'nova-native-ui';
 
 // Wrap your app
 <ToastProvider maxVisible={3}>
@@ -293,7 +293,7 @@ function MyComponent() {
 ### Custom Theme
 
 ```tsx
-import { ThemeProvider } from 'nova-ui';
+import { ThemeProvider } from 'nova-native-ui';
 
 const customTheme = {
   colors: {
@@ -319,7 +319,7 @@ const customTheme = {
 ### Using the Theme Hook
 
 ```tsx
-import { useTheme } from 'nova-ui';
+import { useTheme } from 'nova-native-ui';
 
 function MyComponent() {
   const theme = useTheme();
@@ -337,7 +337,7 @@ function MyComponent() {
 ## Utility Functions
 
 ```tsx
-import { withOpacity, lighten, darken, isLightColor } from 'nova-ui';
+import { withOpacity, lighten, darken, isLightColor } from 'nova-native-ui';
 
 withOpacity('#6366F1', 0.5);    // 'rgba(99, 102, 241, 0.5)'
 lighten('#6366F1', 0.3);        // lighter shade
@@ -352,7 +352,7 @@ isLightColor('#FFFFFF');         // true
 All components are fully typed. Import types as needed:
 
 ```tsx
-import type { ButtonProps, NovaTheme, NovaColors } from 'nova-ui';
+import type { ButtonProps, NovaTheme, NovaColors } from 'nova-native-ui';
 ```
 
 ---

@@ -26,8 +26,8 @@ import {
   RadioGroup,
   // Overlay
   NovaModal,
-} from '@ibidi/nova-ui';
-import type { RadioOption } from '@ibidi/nova-ui';
+} from 'nova-native-ui';
+import type { RadioOption } from 'nova-native-ui';
 
 // ─── Section Wrapper ───
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -463,7 +463,7 @@ function AppContent() {
 
         <Box padding="lg" align="center">
           <NovaText variant="caption" color="secondary">
-            @ibidi/nova-ui v0.1.0
+            nova-native-ui v0.1.0
           </NovaText>
         </Box>
       </ScrollView>
