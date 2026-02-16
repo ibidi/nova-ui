@@ -3,791 +3,937 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>nova-ui — React Native UI Component Library</title>
+  <title>nova-native-ui — React Native UI Library</title>
   <meta name="description" content="A modern, customizable, and accessible React Native UI component library built with TypeScript." />
+  <meta property="og:title" content="nova-native-ui" />
+  <meta property="og:description" content="Ship beautiful React Native apps faster with 17+ production-ready components." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ibidi.github.io/nova-ui/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary: #6366F1;
-      --primary-light: #A5B4FC;
-      --primary-dark: #4338CA;
-      --secondary: #8B5CF6;
-      --bg: #FFFFFF;
-      --bg-alt: #F8FAFC;
-      --surface: #F1F5F9;
-      --text: #0F172A;
-      --text-secondary: #64748B;
-      --border: #E2E8F0;
-      --code-bg: #1E293B;
-      --code-text: #E2E8F0;
-      --gradient-start: #6366F1;
-      --gradient-end: #8B5CF6;
-      --radius: 12px;
+      --white: #FFFFFF;
+      --black: #000000;
+      --gray-50: #FAFAFA;
+      --gray-100: #F4F4F5;
+      --gray-200: #E4E4E7;
+      --gray-300: #D4D4D8;
+      --gray-400: #A1A1AA;
+      --gray-500: #71717A;
+      --gray-600: #52525B;
+      --gray-700: #3F3F46;
+      --gray-800: #27272A;
+      --gray-900: #18181B;
+      --gray-950: #09090B;
+
+      --indigo: #6366F1;
+      --indigo-light: #818CF8;
+      --violet: #8B5CF6;
+      --emerald: #10B981;
+      --rose: #F43F5E;
+      --amber: #F59E0B;
+      --sky: #0EA5E9;
+
+      --font: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.6;
+      font-family: var(--font);
+      color: var(--gray-900);
+      background: var(--white);
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      transition: box-shadow 0.3s;
+    ::selection { background: rgba(99,102,241,0.15); }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.06); }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.3); }
+      50% { box-shadow: 0 0 0 12px rgba(99,102,241,0); }
+    }
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    @keyframes scale-in {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(140px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(140px) rotate(-360deg); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ═══ NAV ═══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    nav.scrolled { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
     .nav-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 1180px; margin: 0 auto; padding: 0 32px;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
     }
     .nav-brand {
-      font-weight: 800;
-      font-size: 20px;
-      color: var(--primary);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-weight: 700; font-size: 17px; color: var(--gray-900);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+      letter-spacing: -0.02em;
     }
-    .nav-brand span {
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .nav-logo {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s;
     }
-    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-brand:hover .nav-logo { transform: rotate(10deg) scale(1.05); }
+    .nav-logo svg { width: 14px; height: 14px; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
     .nav-links a {
-      text-decoration: none;
-      color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 14px;
-      transition: color 0.2s;
+      text-decoration: none; color: var(--gray-500); font-weight: 500;
+      font-size: 13.5px; transition: color 0.2s; letter-spacing: -0.01em;
     }
-    .nav-links a:hover { color: var(--primary); }
-    .nav-github {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--text);
-      color: #fff !important;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px !important;
-      transition: opacity 0.2s;
+    .nav-links a:hover { color: var(--gray-900); }
+    .nav-cta {
+      background: var(--gray-900) !important; color: var(--white) !important;
+      padding: 7px 16px !important; border-radius: 8px;
+      font-size: 13px !important; transition: all 0.2s !important;
+      display: inline-flex; align-items: center; gap: 6px;
     }
-    .nav-github:hover { opacity: 0.85; }
+    .nav-cta:hover { background: var(--black) !important; transform: translateY(-1px); }
+    .nav-cta svg { width: 14px; height: 14px; }
 
-    /* ── HERO ── */
+    /* ═══ HERO ═══ */
     .hero {
-      padding: 160px 24px 100px;
+      padding: 160px 32px 120px;
       text-align: center;
-      background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
       position: relative;
       overflow: hidden;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-      pointer-events: none;
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 600px 400px at 50% 0%, rgba(99,102,241,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 300px at 20% 50%, rgba(139,92,246,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 300px at 80% 60%, rgba(14,165,233,0.03) 0%, transparent 70%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.3;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black, transparent);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      padding: 6px 16px 6px 8px; border-radius: 100px;
+      font-size: 12.5px; font-weight: 500; color: var(--gray-600);
+      margin-bottom: 32px; animation: fadeUp 0.6s ease both;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .hero-pill:hover { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+    .hero-pill-badge {
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: var(--white); font-size: 10px; font-weight: 700;
+      padding: 3px 8px; border-radius: 100px; letter-spacing: 0.5px;
     }
     .hero h1 {
-      font-size: clamp(40px, 6vw, 64px);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 20px;
+      font-size: clamp(42px, 5.5vw, 68px);
+      font-weight: 700; letter-spacing: -0.035em;
+      line-height: 1.05; margin-bottom: 24px;
+      color: var(--gray-950);
+      animation: fadeUp 0.6s ease 0.1s both;
     }
-    .hero h1 .gradient {
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 50%, var(--sky) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s ease infinite;
     }
     .hero p {
-      font-size: 18px;
-      color: var(--text-secondary);
-      max-width: 560px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
+      font-size: 17px; color: var(--gray-500); max-width: 480px;
+      margin: 0 auto 44px; line-height: 1.65; letter-spacing: -0.01em;
+      animation: fadeUp 0.6s ease 0.2s both;
     }
     .hero-actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.6s ease 0.3s both;
     }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
-      cursor: pointer;
-      border: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; border-radius: 10px; font-weight: 600;
+      font-size: 14px; text-decoration: none; border: none; cursor: pointer;
+      font-family: var(--font); letter-spacing: -0.01em;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: scale(0.97); }
     .btn-primary {
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+      background: var(--gray-950); color: var(--white);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.08);
     }
-    .btn-primary:hover { box-shadow: 0 6px 24px rgba(99,102,241,0.4); }
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1.5px solid var(--border);
+    .btn-primary:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: var(--gray-600);
+      border: 1px solid var(--gray-200);
     }
-    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-ghost:hover { background: var(--gray-50); color: var(--gray-900); border-color: var(--gray-300); }
 
-    .install-code {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--code-bg);
-      color: var(--code-text);
-      padding: 14px 24px;
-      border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      margin-top: 32px;
+    .install-bar {
+      display: inline-flex; align-items: center; gap: 14px;
+      background: var(--gray-950); color: rgba(255,255,255,0.7);
+      padding: 14px 20px; border-radius: 12px;
+      font-family: var(--mono); font-size: 13.5px;
+      margin-top: 40px; animation: fadeUp 0.6s ease 0.4s both;
+      position: relative; overflow: hidden;
     }
-    .install-code .dollar { color: #94A3B8; user-select: none; }
+    .install-bar::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    .install-bar .prompt { color: var(--indigo-light); user-select: none; }
+    .install-bar code { color: rgba(255,255,255,0.9); position: relative; }
     .copy-btn {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: #94A3B8;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: 'Inter', sans-serif;
-      transition: background 0.2s, color 0.2s;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5); padding: 5px 12px; border-radius: 6px;
+      cursor: pointer; font-size: 11.5px; font-family: var(--font);
+      font-weight: 500; transition: all 0.2s; position: relative;
     }
-    .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .copy-btn:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.8); }
+    .copy-btn.copied { background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3); color: var(--emerald); }
 
-    /* ── FEATURES ── */
-    .features {
-      padding: 100px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
+    /* ═══ STATS ═══ */
+    .stats {
+      padding: 0 32px; margin-top: -40px; position: relative; z-index: 2;
     }
-    .section-label {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 12px;
+    .stats-inner {
+      max-width: 700px; margin: 0 auto;
+      display: flex; justify-content: center; gap: 48px;
     }
-    .section-title {
-      font-size: clamp(28px, 4vw, 40px);
-      font-weight: 800;
-      text-align: center;
+    .stat { text-align: center; }
+    .stat-value {
+      font-size: 32px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--gray-950);
+    }
+    .stat-label { font-size: 13px; color: var(--gray-400); font-weight: 500; margin-top: 4px; }
+
+    /* ═══ FEATURES ═══ */
+    .features { padding: 140px 32px; max-width: 1180px; margin: 0 auto; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--indigo);
       margin-bottom: 16px;
-      letter-spacing: -0.01em;
     }
-    .section-desc {
-      font-size: 17px;
-      color: var(--text-secondary);
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 60px;
+    .section-tag::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--indigo); animation: pulse-glow 2s ease infinite;
     }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+    .section-heading {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
+      color: var(--gray-950); margin-bottom: 16px;
     }
-    .feature-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+    .section-sub {
+      font-size: 16px; color: var(--gray-400); max-width: 500px;
+      line-height: 1.6; letter-spacing: -0.01em;
     }
-    .feature-card:hover {
-      border-color: var(--primary-light);
-      box-shadow: 0 4px 24px rgba(99,102,241,0.08);
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header .section-sub { margin: 0 auto; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--gray-200); border-radius: 16px; overflow: hidden; border: 1px solid var(--gray-200); }
+    .feature-item {
+      background: var(--white); padding: 36px 32px;
+      transition: background 0.3s;
     }
+    .feature-item:hover { background: var(--gray-50); }
     .feature-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 20px;
     }
-    .feature-card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .feature-item h3 {
+      font-size: 15px; font-weight: 650; margin-bottom: 8px;
+      letter-spacing: -0.02em; color: var(--gray-900);
     }
-    .feature-card p {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
+    .feature-item p {
+      font-size: 13.5px; color: var(--gray-400); line-height: 1.65;
     }
 
-    /* ── COMPONENTS SHOWCASE ── */
-    .components {
-      padding: 100px 24px;
-      background: var(--bg-alt);
+    /* ═══ COMPONENTS SHOWCASE ═══ */
+    .showcase { padding: 140px 32px; background: var(--gray-50); }
+    .showcase-inner { max-width: 1180px; margin: 0 auto; }
+
+    .component-tabs {
+      display: flex; gap: 6px; margin-bottom: 48px; justify-content: center;
+      flex-wrap: wrap;
     }
-    .components-inner {
-      max-width: 1200px;
-      margin: 0 auto;
+    .tab-btn {
+      padding: 8px 18px; border-radius: 100px; font-size: 13px;
+      font-weight: 500; font-family: var(--font); border: 1px solid var(--gray-200);
+      background: var(--white); color: var(--gray-500); cursor: pointer;
+      transition: all 0.2s; letter-spacing: -0.01em;
     }
+    .tab-btn:hover { border-color: var(--gray-300); color: var(--gray-700); }
+    .tab-btn.active {
+      background: var(--gray-900); color: var(--white); border-color: var(--gray-900);
+    }
+
     .component-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .component-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .component-card:hover {
-      border-color: var(--primary-light);
-      box-shadow: 0 4px 24px rgba(99,102,241,0.06);
-    }
-    .component-preview {
-      padding: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      min-height: 100px;
-      background: var(--bg);
-    }
-    .component-info {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      background: var(--bg-alt);
-    }
-    .component-info h4 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .component-info p {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    /* Preview components */
-    .preview-btn {
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-    .preview-btn.solid { background: var(--primary); color: #fff; }
-    .preview-btn.outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
-    .preview-btn.ghost { background: transparent; color: var(--primary); }
-    .preview-btn.soft { background: rgba(99,102,241,0.1); color: var(--primary); }
-
-    .preview-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .preview-badge.success { background: #DCFCE7; color: #16A34A; }
-    .preview-badge.error { background: #FEE2E2; color: #DC2626; }
-    .preview-badge.info { background: #DBEAFE; color: #2563EB; }
-    .preview-badge.warning { background: #FEF3C7; color: #D97706; }
-
-    .preview-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    .preview-input {
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      width: 200px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .preview-input:focus { border-color: var(--primary); }
-
-    .preview-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 500;
-      background: rgba(99,102,241,0.1);
-      color: var(--primary);
-    }
-
-    .preview-switch {
-      width: 48px;
-      height: 26px;
-      background: var(--primary);
-      border-radius: 13px;
-      position: relative;
-      cursor: pointer;
-    }
-    .preview-switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 22px;
-      height: 22px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-    }
-
-    .preview-card {
-      background: var(--bg);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      width: 180px;
-      font-size: 13px;
-    }
-    .preview-card strong { display: block; margin-bottom: 4px; font-size: 14px; }
-    .preview-card span { color: var(--text-secondary); font-size: 12px; }
-
-    .preview-toast {
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 12px 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      border-left: 4px solid #22C55E;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      width: 220px;
-    }
-    .preview-toast .toast-icon { font-size: 16px; }
-
-    /* ── CODE EXAMPLE ── */
-    .example {
-      padding: 100px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .code-block {
-      background: var(--code-bg);
-      border-radius: var(--radius);
-      padding: 28px 32px;
-      overflow-x: auto;
-      margin-top: 40px;
-    }
-    .code-block pre {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--code-text);
-    }
-    .code-block .keyword { color: #C084FC; }
-    .code-block .string { color: #86EFAC; }
-    .code-block .component { color: #FDA4AF; }
-    .code-block .prop { color: #93C5FD; }
-    .code-block .comment { color: #64748B; }
-    .code-block .bracket { color: #94A3B8; }
-
-    /* ── CTA ── */
-    .cta {
-      padding: 100px 24px;
-      text-align: center;
-      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
-    }
-    .cta h2 {
-      font-size: clamp(28px, 4vw, 40px);
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-    .cta p {
-      font-size: 17px;
-      color: var(--text-secondary);
-      max-width: 500px;
-      margin: 0 auto 40px;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 40px 24px;
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 16px;
     }
-    footer p {
-      font-size: 14px;
-      color: var(--text-secondary);
+    .comp-card {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: 14px; overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    footer a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
+    .comp-card:hover { border-color: var(--gray-300); box-shadow: 0 8px 30px rgba(0,0,0,0.04); transform: translateY(-2px); }
+    .comp-preview {
+      padding: 32px 24px; display: flex; align-items: center;
+      justify-content: center; gap: 10px; flex-wrap: wrap;
+      min-height: 120px; position: relative;
     }
-    footer a:hover { text-decoration: underline; }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a { font-size: 14px; color: var(--text-secondary); }
-    .footer-links a:hover { color: var(--primary); }
+    .comp-meta {
+      padding: 14px 20px; border-top: 1px solid var(--gray-100);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .comp-name { font-size: 13px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.01em; }
+    .comp-desc { font-size: 11.5px; color: var(--gray-400); }
 
-    /* ── MOBILE ── */
-    .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; cursor: pointer; }
+    /* Live previews */
+    .p-btn {
+      padding: 9px 20px; border-radius: 8px; font-size: 13.5px;
+      font-weight: 600; border: none; cursor: pointer; font-family: var(--font);
+      transition: all 0.15s; letter-spacing: -0.01em;
+    }
+    .p-btn:active { transform: scale(0.95); }
+    .p-btn-solid { background: var(--indigo); color: #fff; }
+    .p-btn-solid:hover { background: #5558E6; }
+    .p-btn-outline { background: transparent; border: 1.5px solid var(--indigo); color: var(--indigo); }
+    .p-btn-ghost { background: transparent; color: var(--indigo); }
+    .p-btn-ghost:hover { background: rgba(99,102,241,0.06); }
+    .p-btn-soft { background: rgba(99,102,241,0.08); color: var(--indigo); }
+
+    .p-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 6px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    }
+    .p-badge-green { background: #ECFDF5; color: #059669; }
+    .p-badge-red { background: #FEF2F2; color: #DC2626; }
+    .p-badge-blue { background: #EFF6FF; color: #2563EB; }
+    .p-badge-amber { background: #FFFBEB; color: #D97706; }
+    .p-badge-violet { background: #F5F3FF; color: #7C3AED; }
+
+    .p-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 600; font-size: 14px;
+      box-shadow: 0 0 0 2px var(--white);
+      transition: transform 0.2s;
+    }
+    .p-avatar:hover { transform: scale(1.1); z-index: 1; }
+    .avatar-stack { display: flex; margin-left: 0; }
+    .avatar-stack .p-avatar + .p-avatar { margin-left: -10px; }
+
+    .p-input {
+      border: 1.5px solid var(--gray-200); border-radius: 9px;
+      padding: 10px 14px; font-size: 13.5px; font-family: var(--font);
+      width: 220px; outline: none; transition: all 0.2s; color: var(--gray-900);
+      background: var(--white);
+    }
+    .p-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    .p-input-label { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; display: block; }
+
+    .p-switch {
+      width: 44px; height: 24px; border-radius: 12px;
+      position: relative; cursor: pointer; transition: background 0.3s;
+    }
+    .p-switch::after {
+      content: ''; position: absolute; top: 2px;
+      width: 20px; height: 20px; background: #fff;
+      border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .p-switch-on { background: var(--indigo); }
+    .p-switch-on::after { transform: translateX(20px); left: 2px; }
+    .p-switch-off { background: var(--gray-300); }
+    .p-switch-off::after { left: 2px; }
+
+    .p-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 100px; font-size: 12.5px;
+      font-weight: 500; cursor: pointer; transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .p-chip:hover { transform: translateY(-1px); }
+    .p-chip-active { background: var(--indigo); color: #fff; }
+    .p-chip-inactive { background: rgba(99,102,241,0.06); color: var(--indigo); border-color: rgba(99,102,241,0.15); }
+
+    .p-card {
+      background: var(--white); border-radius: 12px; padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid var(--gray-100); width: 200px;
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .p-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .p-card-title { font-size: 14px; font-weight: 650; margin-bottom: 4px; letter-spacing: -0.01em; }
+    .p-card-sub { font-size: 11.5px; color: var(--gray-400); }
+
+    .p-toast {
+      background: var(--white); border-radius: 12px; padding: 14px 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      display: flex; align-items: flex-start; gap: 12px;
+      width: 260px; border: 1px solid var(--gray-100);
+      animation: scale-in 0.3s ease;
+    }
+    .p-toast-icon {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; margin-top: 1px;
+    }
+    .p-toast-title { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+    .p-toast-desc { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+
+    .p-checkbox {
+      width: 20px; height: 20px; border-radius: 5px; border: 2px solid;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; cursor: pointer; font-size: 11px; color: #fff; font-weight: 700;
+    }
+    .p-checkbox-on { background: var(--indigo); border-color: var(--indigo); }
+    .p-checkbox-off { background: transparent; border-color: var(--gray-300); }
+    .p-check-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600); }
+
+    /* ═══ CODE ═══ */
+    .code-section { padding: 140px 32px; max-width: 1180px; margin: 0 auto; }
+    .code-window {
+      background: #0C0C0E; border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      margin-top: 48px;
+    }
+    .code-topbar {
+      padding: 14px 20px; display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .code-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .code-dot-red { background: #FF605C; }
+    .code-dot-yellow { background: #FFBD44; }
+    .code-dot-green { background: #00CA4E; }
+    .code-filename {
+      margin-left: 12px; font-size: 12px; color: rgba(255,255,255,0.3);
+      font-family: var(--mono);
+    }
+    .code-body {
+      padding: 24px 28px; overflow-x: auto;
+    }
+    .code-body pre {
+      font-family: var(--mono); font-size: 13px; line-height: 1.85;
+      color: rgba(255,255,255,0.5);
+    }
+    .c-kw { color: #C084FC; }
+    .c-fn { color: #67E8F9; }
+    .c-str { color: #86EFAC; }
+    .c-comp { color: #FDA4AF; }
+    .c-prop { color: #93C5FD; }
+    .c-com { color: rgba(255,255,255,0.2); }
+    .c-br { color: rgba(255,255,255,0.35); }
+    .c-w { color: rgba(255,255,255,0.75); }
+
+    /* ═══ CTA ═══ */
+    .cta {
+      padding: 120px 32px; text-align: center; position: relative;
+      overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 500px 300px at 50% 60%, rgba(99,102,241,0.05) 0%, transparent 70%);
+    }
+    .cta-content { position: relative; z-index: 1; }
+    .cta h2 {
+      font-size: clamp(28px, 3.5vw, 44px); font-weight: 700;
+      letter-spacing: -0.03em; margin-bottom: 16px; color: var(--gray-950);
+    }
+    .cta p { font-size: 16px; color: var(--gray-400); max-width: 420px; margin: 0 auto 40px; line-height: 1.6; }
+
+    /* ═══ FOOTER ═══ */
+    footer {
+      padding: 32px 32px; border-top: 1px solid var(--gray-100);
+    }
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p { font-size: 13px; color: var(--gray-400); }
+    footer a { color: var(--gray-500); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    footer a:hover { color: var(--indigo); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; }
+
+    /* ═══ MOBILE ═══ */
+    .mobile-menu { display: none; background: none; border: none; cursor: pointer; color: var(--gray-600); padding: 4px; }
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .mobile-menu-btn { display: block; }
+      .mobile-menu { display: block; }
       .features-grid { grid-template-columns: 1fr; }
       .component-grid { grid-template-columns: 1fr; }
-      .hero { padding: 130px 20px 70px; }
-      .hero-actions { flex-direction: column; align-items: center; }
+      .stats-inner { gap: 28px; }
+      .stat-value { font-size: 24px; }
+      .hero { padding: 130px 20px 80px; }
+      .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .stats-inner { flex-direction: column; gap: 16px; }
+      .install-bar { font-size: 12px; padding: 12px 16px; }
     }
   </style>
 </head>
 <body>
+
   <!-- NAV -->
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#" class="nav-brand">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill="url(#g1)" />
-          <path d="M8 14L14 8L20 14L14 20L8 14Z" fill="white" opacity="0.9" />
-          <defs>
-            <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
-              <stop stop-color="#6366F1" />
-              <stop offset="1" stop-color="#8B5CF6" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <span>nova-ui</span>
+        <div class="nav-logo">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M4 7L7 4L10 7L7 10L4 7Z" fill="white"/></svg>
+        </div>
+        nova-native-ui
       </a>
       <div class="nav-links">
         <a href="#features">Features</a>
         <a href="#components">Components</a>
-        <a href="#quickstart">Quick Start</a>
-        <a href="https://github.com/ibidi/nova-ui" class="nav-github" target="_blank">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <a href="#code">Quick Start</a>
+        <a href="https://github.com/ibidi/nova-ui" target="_blank" class="nav-cta">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           GitHub
         </a>
       </div>
-      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">&#9776;</button>
+      <button class="mobile-menu" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <h1>Build beautiful<br/>React Native apps with<br/><span class="gradient">nova-ui</span></h1>
-    <p>A modern, customizable, and accessible UI component library for React Native. TypeScript-first with 17+ production-ready components.</p>
-    <div class="hero-actions">
-      <a href="#quickstart" class="btn btn-primary">Get Started</a>
-      <a href="#components" class="btn btn-outline">View Components</a>
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-pill">
+        <span class="hero-pill-badge">v0.1</span>
+        Now available on npm
+      </div>
+      <h1>The component library<br/>React Native <span class="accent">deserves</span></h1>
+      <p>17+ production-ready, accessible, and beautifully crafted components. Theme-aware, animated, and zero dependencies.</p>
+      <div class="hero-actions">
+        <a href="#code" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/ibidi/nova-ui" class="btn btn-ghost" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Star on GitHub
+        </a>
+      </div>
+      <div class="install-bar">
+        <span class="prompt">$</span>
+        <code>npm install nova-native-ui</code>
+        <button class="copy-btn" id="copyBtn" onclick="copyInstall()">Copy</button>
+      </div>
     </div>
-    <div class="install-code">
-      <span class="dollar">$</span>
-      <span>npm install nova-native-ui</span>
-      <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install nova-native-ui');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats reveal">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-value" data-count="17">0</div>
+        <div class="stat-label">Components</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" data-count="0">0</div>
+        <div class="stat-label">Dependencies</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">TypeScript</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">MIT</div>
+        <div class="stat-label">License</div>
+      </div>
     </div>
   </section>
 
   <!-- FEATURES -->
   <section class="features" id="features">
-    <p class="section-label">Why nova-ui?</p>
-    <h2 class="section-title">Everything you need to ship faster</h2>
-    <p class="section-desc">Built from the ground up for React Native with developer experience and accessibility in mind.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">&#9889;</div>
+    <div class="section-header reveal">
+      <div class="section-tag">Why nova?</div>
+      <h2 class="section-heading">Built for developers<br/>who ship fast</h2>
+      <p class="section-sub">Everything you need to build beautiful, consistent mobile experiences without reinventing the wheel.</p>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.08);color:var(--indigo)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
         <h3>17+ Components</h3>
-        <p>Buttons, inputs, cards, modals, toasts, avatars, switches, checkboxes, and much more — all ready for production.</p>
+        <p>Buttons, inputs, cards, modals, toasts, avatars, switches, checkboxes — everything you need, nothing you don't.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#127912;</div>
-        <h3>Theming System</h3>
-        <p>Light &amp; dark mode out of the box. Customize every color, spacing, typography, radius, and shadow token to match your brand.</p>
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.08);color:var(--violet)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </div>
+        <h3>Theme System</h3>
+        <p>Light and dark mode built-in. Customize every token — colors, spacing, radii, typography, shadows — to match your brand.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128736;</div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(14,165,233,0.08);color:var(--sky)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </div>
         <h3>TypeScript First</h3>
-        <p>Complete type definitions for every component and prop. Enjoy full IntelliSense and autocomplete in your IDE.</p>
+        <p>Full type definitions, IntelliSense, and autocomplete. Catch errors at compile time, not runtime.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#9855;</div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.08);color:var(--emerald)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
         <h3>Accessible</h3>
-        <p>Built-in accessibility roles, states, and labels. Screen readers and assistive technologies work seamlessly.</p>
+        <p>Proper accessibility roles, states, and labels out of the box. Screen readers and assistive tech just work.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#10024;</div>
-        <h3>Smooth Animations</h3>
-        <p>Interactive components come with beautiful native animations powered by React Native's Animated API.</p>
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(244,63,94,0.08);color:var(--rose)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Animated</h3>
+        <p>Smooth 60fps native animations powered by React Native Animated API. No extra libraries needed.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128230;</div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.08);color:var(--amber)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
         <h3>Zero Dependencies</h3>
-        <p>Only React and React Native as peer dependencies. No bloated node_modules. Tree-shakeable — import only what you need.</p>
+        <p>Only React and React Native as peer deps. Tree-shakeable exports — your bundle stays lean.</p>
       </div>
     </div>
   </section>
 
   <!-- COMPONENTS -->
-  <section class="components" id="components">
-    <div class="components-inner">
-      <p class="section-label">Components</p>
-      <h2 class="section-title">Ready-to-use building blocks</h2>
-      <p class="section-desc">Every component is designed to be flexible, consistent, and beautiful out of the box.</p>
+  <section class="showcase" id="components">
+    <div class="showcase-inner">
+      <div class="section-header reveal">
+        <div class="section-tag">Components</div>
+        <h2 class="section-heading">Every building block<br/>you need</h2>
+        <p class="section-sub">Carefully crafted, consistent, and ready to drop into your project.</p>
+      </div>
+
       <div class="component-grid">
-        <!-- Button -->
-        <div class="component-card">
-          <div class="component-preview">
-            <button class="preview-btn solid">Solid</button>
-            <button class="preview-btn outline">Outline</button>
-            <button class="preview-btn ghost">Ghost</button>
-            <button class="preview-btn soft">Soft</button>
+        <div class="comp-card reveal">
+          <div class="comp-preview">
+            <button class="p-btn p-btn-solid">Primary</button>
+            <button class="p-btn p-btn-outline">Outline</button>
+            <button class="p-btn p-btn-ghost">Ghost</button>
+            <button class="p-btn p-btn-soft">Soft</button>
           </div>
-          <div class="component-info">
-            <h4>Button</h4>
-            <p>4 variants, 6 colors, 3 sizes, loading state, icons</p>
-          </div>
+          <div class="comp-meta"><span class="comp-name">Button</span><span class="comp-desc">4 variants · 6 colors · 3 sizes</span></div>
         </div>
 
-        <!-- Badge -->
-        <div class="component-card">
-          <div class="component-preview">
-            <span class="preview-badge success">Success</span>
-            <span class="preview-badge error">Error</span>
-            <span class="preview-badge info">Info</span>
-            <span class="preview-badge warning">Warning</span>
-          </div>
-          <div class="component-info">
-            <h4>Badge</h4>
-            <p>Solid, outline, soft variants with BadgeDot</p>
-          </div>
-        </div>
-
-        <!-- Avatar -->
-        <div class="component-card">
-          <div class="component-preview">
-            <div class="preview-avatar" style="background:#6366F1">IB</div>
-            <div class="preview-avatar" style="background:#8B5CF6;width:36px;height:36px;font-size:13px">JD</div>
-            <div class="preview-avatar" style="background:#EC4899;width:52px;height:52px;font-size:19px">AK</div>
-            <div class="preview-avatar" style="background:#22C55E;width:32px;height:32px;font-size:12px">MR</div>
-          </div>
-          <div class="component-info">
-            <h4>Avatar</h4>
-            <p>Image or auto-generated initials with color, 5 sizes</p>
-          </div>
-        </div>
-
-        <!-- Input -->
-        <div class="component-card">
-          <div class="component-preview" style="flex-direction:column;gap:8px">
-            <input class="preview-input" placeholder="Outline input..." />
-            <input class="preview-input" placeholder="With label..." style="background:#F1F5F9;border-color:transparent;border-bottom:2px solid var(--border)" />
-          </div>
-          <div class="component-info">
-            <h4>Input</h4>
-            <p>3 variants, label, helper text, error state, icons</p>
-          </div>
-        </div>
-
-        <!-- Chip -->
-        <div class="component-card">
-          <div class="component-preview">
-            <span class="preview-chip">React Native</span>
-            <span class="preview-chip" style="background:rgba(139,92,246,0.1);color:#8B5CF6">TypeScript</span>
-            <span class="preview-chip" style="background:rgba(34,197,94,0.1);color:#22C55E">Open Source</span>
-          </div>
-          <div class="component-info">
-            <h4>Chip</h4>
-            <p>Selectable, closable, with icons, 3 variants</p>
-          </div>
-        </div>
-
-        <!-- Switch -->
-        <div class="component-card">
-          <div class="component-preview">
-            <div class="preview-switch"></div>
-            <div class="preview-switch" style="background:var(--border);">
-              <style>.preview-switch[style*="border"]::after { right: auto !important; left: 2px !important; }</style>
+        <div class="comp-card reveal reveal-delay-1">
+          <div class="comp-preview" style="flex-direction:column;gap:12px">
+            <div>
+              <span class="p-input-label">Email address</span>
+              <input class="p-input" placeholder="you@example.com" />
             </div>
           </div>
-          <div class="component-info">
-            <h4>Switch</h4>
-            <p>Animated toggle, 5 colors, 3 sizes, label</p>
-          </div>
+          <div class="comp-meta"><span class="comp-name">Input</span><span class="comp-desc">3 variants · label · error state</span></div>
         </div>
 
-        <!-- Card -->
-        <div class="component-card">
-          <div class="component-preview">
-            <div class="preview-card">
-              <strong>Card Title</strong>
-              <span>Elevated, outlined, or filled variants</span>
+        <div class="comp-card reveal reveal-delay-2">
+          <div class="comp-preview">
+            <div class="avatar-stack">
+              <div class="p-avatar" style="background:#6366F1">IB</div>
+              <div class="p-avatar" style="background:#8B5CF6">JD</div>
+              <div class="p-avatar" style="background:#EC4899">AS</div>
+              <div class="p-avatar" style="background:#0EA5E9">MK</div>
+              <div class="p-avatar" style="background:#10B981">TR</div>
             </div>
           </div>
-          <div class="component-info">
-            <h4>Card</h4>
-            <p>3 variants with padding and rounded options</p>
-          </div>
+          <div class="comp-meta"><span class="comp-name">Avatar</span><span class="comp-desc">Image or initials · 5 sizes</span></div>
         </div>
 
-        <!-- Toast -->
-        <div class="component-card">
-          <div class="component-preview">
-            <div class="preview-toast">
-              <span class="toast-icon" style="color:#22C55E">&#10003;</span>
+        <div class="comp-card reveal">
+          <div class="comp-preview" style="gap:8px">
+            <span class="p-badge p-badge-green">Active</span>
+            <span class="p-badge p-badge-red">Critical</span>
+            <span class="p-badge p-badge-blue">In Review</span>
+            <span class="p-badge p-badge-amber">Pending</span>
+            <span class="p-badge p-badge-violet">Beta</span>
+          </div>
+          <div class="comp-meta"><span class="comp-name">Badge</span><span class="comp-desc">3 variants · 6 colors · dot</span></div>
+        </div>
+
+        <div class="comp-card reveal reveal-delay-1">
+          <div class="comp-preview" style="gap:8px">
+            <span class="p-chip p-chip-active">React Native</span>
+            <span class="p-chip p-chip-inactive">TypeScript</span>
+            <span class="p-chip p-chip-inactive">Expo</span>
+          </div>
+          <div class="comp-meta"><span class="comp-name">Chip</span><span class="comp-desc">Selectable · closable · icons</span></div>
+        </div>
+
+        <div class="comp-card reveal reveal-delay-2">
+          <div class="comp-preview" style="gap:20px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="p-switch p-switch-on" onclick="this.classList.toggle('p-switch-on');this.classList.toggle('p-switch-off')"></div>
+              <span style="font-size:13px;color:var(--gray-600)">Notifications</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="p-switch p-switch-off" onclick="this.classList.toggle('p-switch-on');this.classList.toggle('p-switch-off')"></div>
+              <span style="font-size:13px;color:var(--gray-600)">Dark mode</span>
+            </div>
+          </div>
+          <div class="comp-meta"><span class="comp-name">Switch</span><span class="comp-desc">Animated · 5 colors · 3 sizes</span></div>
+        </div>
+
+        <div class="comp-card reveal">
+          <div class="comp-preview">
+            <div class="p-card">
+              <div class="p-card-title">Project Update</div>
+              <div class="p-card-sub">3 variants with padding, rounded, and shadow options</div>
+            </div>
+          </div>
+          <div class="comp-meta"><span class="comp-name">Card</span><span class="comp-desc">Elevated · outlined · filled</span></div>
+        </div>
+
+        <div class="comp-card reveal reveal-delay-1">
+          <div class="comp-preview" style="flex-direction:column;gap:8px">
+            <div class="p-check-row" onclick="this.querySelector('.p-checkbox').classList.toggle('p-checkbox-on');this.querySelector('.p-checkbox').classList.toggle('p-checkbox-off')">
+              <div class="p-checkbox p-checkbox-on">&#10003;</div>
+              <span>I agree to the terms</span>
+            </div>
+            <div class="p-check-row" onclick="this.querySelector('.p-checkbox').classList.toggle('p-checkbox-on');this.querySelector('.p-checkbox').classList.toggle('p-checkbox-off')">
+              <div class="p-checkbox p-checkbox-off"></div>
+              <span>Subscribe to newsletter</span>
+            </div>
+          </div>
+          <div class="comp-meta"><span class="comp-name">Checkbox</span><span class="comp-desc">Animated · labeled · 3 sizes</span></div>
+        </div>
+
+        <div class="comp-card reveal reveal-delay-2">
+          <div class="comp-preview">
+            <div class="p-toast">
+              <div class="p-toast-icon" style="background:var(--emerald)">&#10003;</div>
               <div>
-                <strong style="font-size:13px">Saved!</strong>
-                <div style="font-size:11px;color:var(--text-secondary)">Changes have been saved.</div>
+                <div class="p-toast-title">Changes saved</div>
+                <div class="p-toast-desc">Your profile has been updated.</div>
               </div>
             </div>
           </div>
-          <div class="component-info">
-            <h4>Toast</h4>
-            <p>4 types, auto-dismiss, animated, top/bottom position</p>
-          </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="component-card">
-          <div class="component-preview" style="position:relative">
-            <div style="background:#F1F5F9;border-radius:10px;padding:20px 24px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.12);font-size:14px;font-weight:600;width:180px">
-              Modal Content
-              <div style="font-size:11px;color:var(--text-secondary);font-weight:400;margin-top:4px">4 sizes, animated</div>
-            </div>
-          </div>
-          <div class="component-info">
-            <h4>Modal</h4>
-            <p>sm, md, lg, full sizes with keyboard avoidance</p>
-          </div>
+          <div class="comp-meta"><span class="comp-name">Toast</span><span class="comp-desc">4 types · auto-dismiss · animated</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- QUICK START -->
-  <section class="example" id="quickstart">
-    <p class="section-label">Quick Start</p>
-    <h2 class="section-title">Up and running in minutes</h2>
-    <p class="section-desc">Wrap your app with ThemeProvider, import any component, and start building.</p>
-    <div class="code-block">
-      <pre><span class="keyword">import</span> <span class="bracket">{</span>
-  ThemeProvider<span class="bracket">,</span>
-  ToastProvider<span class="bracket">,</span>
-  Button<span class="bracket">,</span>
-  NovaText<span class="bracket">,</span>
-  Input<span class="bracket">,</span>
-  Card<span class="bracket">,</span>
-  VStack<span class="bracket">,</span>
-  useToast<span class="bracket">,</span>
-<span class="bracket">}</span> <span class="keyword">from</span> <span class="string">'nova-native-ui'</span><span class="bracket">;</span>
+  <!-- CODE -->
+  <section class="code-section" id="code">
+    <div class="section-header reveal">
+      <div class="section-tag">Quick Start</div>
+      <h2 class="section-heading">Ready in under a minute</h2>
+      <p class="section-sub">Install, wrap with ThemeProvider, and start building.</p>
+    </div>
+    <div class="code-window reveal">
+      <div class="code-topbar">
+        <div class="code-dot code-dot-red"></div>
+        <div class="code-dot code-dot-yellow"></div>
+        <div class="code-dot code-dot-green"></div>
+        <span class="code-filename">App.tsx</span>
+      </div>
+      <div class="code-body">
+        <pre><span class="c-kw">import</span> <span class="c-br">{</span>
+  <span class="c-w">ThemeProvider</span><span class="c-br">,</span> <span class="c-w">ToastProvider</span><span class="c-br">,</span>
+  <span class="c-w">Button</span><span class="c-br">,</span> <span class="c-w">NovaText</span><span class="c-br">,</span> <span class="c-w">Input</span><span class="c-br">,</span>
+  <span class="c-w">Card</span><span class="c-br">,</span> <span class="c-w">VStack</span><span class="c-br">,</span>
+<span class="c-br">}</span> <span class="c-kw">from</span> <span class="c-str">'nova-native-ui'</span><span class="c-br">;</span>
 
-<span class="keyword">export default function</span> <span class="component">App</span><span class="bracket">() {</span>
-  <span class="keyword">return</span> <span class="bracket">(</span>
-    <span class="bracket">&lt;</span><span class="component">ThemeProvider</span> <span class="prop">darkMode</span><span class="bracket">={</span><span class="keyword">false</span><span class="bracket">}&gt;</span>
-      <span class="bracket">&lt;</span><span class="component">ToastProvider</span><span class="bracket">&gt;</span>
-        <span class="bracket">&lt;</span><span class="component">VStack</span> <span class="prop">spacing</span><span class="bracket">=</span><span class="string">"md"</span> <span class="prop">padding</span><span class="bracket">=</span><span class="string">"lg"</span><span class="bracket">&gt;</span>
-          <span class="bracket">&lt;</span><span class="component">NovaText</span> <span class="prop">variant</span><span class="bracket">=</span><span class="string">"h2"</span><span class="bracket">&gt;</span>Welcome<span class="bracket">&lt;/</span><span class="component">NovaText</span><span class="bracket">&gt;</span>
-          <span class="bracket">&lt;</span><span class="component">Card</span> <span class="prop">variant</span><span class="bracket">=</span><span class="string">"elevated"</span><span class="bracket">&gt;</span>
-            <span class="bracket">&lt;</span><span class="component">Input</span> <span class="prop">label</span><span class="bracket">=</span><span class="string">"Email"</span> <span class="prop">placeholder</span><span class="bracket">=</span><span class="string">"you@example.com"</span> <span class="bracket">/&gt;</span>
-            <span class="bracket">&lt;</span><span class="component">Button</span> <span class="prop">color</span><span class="bracket">=</span><span class="string">"primary"</span><span class="bracket">&gt;</span>Sign In<span class="bracket">&lt;/</span><span class="component">Button</span><span class="bracket">&gt;</span>
-          <span class="bracket">&lt;/</span><span class="component">Card</span><span class="bracket">&gt;</span>
-        <span class="bracket">&lt;/</span><span class="component">VStack</span><span class="bracket">&gt;</span>
-      <span class="bracket">&lt;/</span><span class="component">ToastProvider</span><span class="bracket">&gt;</span>
-    <span class="bracket">&lt;/</span><span class="component">ThemeProvider</span><span class="bracket">&gt;</span>
-  <span class="bracket">);</span>
-<span class="bracket">}</span></pre>
+<span class="c-kw">export default function</span> <span class="c-fn">App</span><span class="c-br">() {</span>
+  <span class="c-kw">return</span> <span class="c-br">(</span>
+    <span class="c-br">&lt;</span><span class="c-comp">ThemeProvider</span> <span class="c-prop">darkMode</span><span class="c-br">={</span><span class="c-kw">false</span><span class="c-br">}&gt;</span>
+      <span class="c-br">&lt;</span><span class="c-comp">ToastProvider</span><span class="c-br">&gt;</span>
+        <span class="c-br">&lt;</span><span class="c-comp">VStack</span> <span class="c-prop">spacing</span><span class="c-br">=</span><span class="c-str">"lg"</span> <span class="c-prop">padding</span><span class="c-br">=</span><span class="c-str">"lg"</span><span class="c-br">&gt;</span>
+          <span class="c-br">&lt;</span><span class="c-comp">NovaText</span> <span class="c-prop">variant</span><span class="c-br">=</span><span class="c-str">"h1"</span><span class="c-br">&gt;</span><span class="c-w">Welcome</span><span class="c-br">&lt;/</span><span class="c-comp">NovaText</span><span class="c-br">&gt;</span>
+
+          <span class="c-br">&lt;</span><span class="c-comp">Card</span> <span class="c-prop">variant</span><span class="c-br">=</span><span class="c-str">"elevated"</span> <span class="c-prop">padding</span><span class="c-br">=</span><span class="c-str">"lg"</span><span class="c-br">&gt;</span>
+            <span class="c-br">&lt;</span><span class="c-comp">Input</span>
+              <span class="c-prop">label</span><span class="c-br">=</span><span class="c-str">"Email"</span>
+              <span class="c-prop">placeholder</span><span class="c-br">=</span><span class="c-str">"you@example.com"</span>
+            <span class="c-br">/&gt;</span>
+            <span class="c-br">&lt;</span><span class="c-comp">Button</span> <span class="c-prop">color</span><span class="c-br">=</span><span class="c-str">"primary"</span> <span class="c-prop">fullWidth</span><span class="c-br">&gt;</span>
+              <span class="c-w">Sign In</span>
+            <span class="c-br">&lt;/</span><span class="c-comp">Button</span><span class="c-br">&gt;</span>
+          <span class="c-br">&lt;/</span><span class="c-comp">Card</span><span class="c-br">&gt;</span>
+        <span class="c-br">&lt;/</span><span class="c-comp">VStack</span><span class="c-br">&gt;</span>
+      <span class="c-br">&lt;/</span><span class="c-comp">ToastProvider</span><span class="c-br">&gt;</span>
+    <span class="c-br">&lt;/</span><span class="c-comp">ThemeProvider</span><span class="c-br">&gt;</span>
+  <span class="c-br">);</span>
+<span class="c-br">}</span></pre>
+      </div>
     </div>
   </section>
 
   <!-- CTA -->
   <section class="cta">
-    <h2>Start building today</h2>
-    <p>nova-ui is free and open source. Contribute, customize, and create beautiful React Native apps.</p>
-    <div class="hero-actions">
-      <a href="https://github.com/ibidi/nova-ui" class="btn btn-primary" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        Star on GitHub
-      </a>
-      <a href="https://www.npmjs.com/package/nova-native-ui" class="btn btn-outline" target="_blank">View on npm</a>
+    <div class="cta-bg"></div>
+    <div class="cta-content reveal">
+      <h2>Start shipping<br/>beautiful apps today</h2>
+      <p>Open source, free forever. Star us on GitHub and join the community.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://github.com/ibidi/nova-ui" class="btn btn-primary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Star on GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/nova-native-ui" class="btn btn-ghost" target="_blank">View on npm</a>
+      </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <p>Built with &#10084;&#65039; by <a href="https://github.com/ibidi">Ihsan Baki Dogan</a></p>
+      <p>Built by <a href="https://github.com/ibidi" target="_blank">Ihsan Baki Dogan</a></p>
       <div class="footer-links">
-        <a href="https://github.com/ibidi/nova-ui">GitHub</a>
-        <a href="https://github.com/ibidi/nova-ui/issues">Issues</a>
-        <a href="https://github.com/ibidi/nova-ui/blob/main/LICENSE">MIT License</a>
+        <a href="https://github.com/ibidi/nova-ui" target="_blank">GitHub</a>
+        <a href="https://github.com/ibidi/nova-ui/issues" target="_blank">Issues</a>
+        <a href="https://www.npmjs.com/package/nova-native-ui" target="_blank">npm</a>
       </div>
     </div>
   </footer>
 
   <script>
+    // Navbar scroll
     const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 10);
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10));
+
+    // Copy install command
+    function copyInstall() {
+      navigator.clipboard.writeText('npm install nova-native-ui');
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Animated counter
+    function animateCount(el, target, duration) {
+      const start = performance.now();
+      const update = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased);
+        if (progress < 1) requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
+    }
+
+    const countObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const count = parseInt(entry.target.dataset.count);
+          if (!isNaN(count) && count > 0) animateCount(entry.target, count, 1200);
+          countObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
+
+    // Interactive switch toggles
+    document.querySelectorAll('.p-switch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        sw.classList.toggle('p-switch-on');
+        sw.classList.toggle('p-switch-off');
+      });
+    });
+
+    // Interactive checkbox toggles
+    document.querySelectorAll('.p-check-row').forEach(row => {
+      row.style.cursor = 'pointer';
+    });
+
+    // Interactive chip selection
+    document.querySelectorAll('.p-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('p-chip-active');
+        chip.classList.toggle('p-chip-inactive');
+      });
     });
   </script>
 </body>
