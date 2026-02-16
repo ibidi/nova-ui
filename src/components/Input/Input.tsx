@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
-import type { ViewStyle, TextStyle } from 'react-native';
+import type { ViewStyle } from 'react-native';
 import { useTheme } from '../../theme/useTheme';
 import type { NovaTheme } from '../../theme/types';
 import type { NovaInputProps, InputVariant, InputSize } from './Input.types';

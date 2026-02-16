@@ -10,11 +10,11 @@ export interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
-function deepMerge<T extends Record<string, unknown>>(
-  base: T,
-  override: Partial<T>
-): T {
-  const result = { ...base };
+function deepMerge(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>
+): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...base };
   for (const key in override) {
     if (Object.prototype.hasOwnProperty.call(override, key)) {
       const overrideVal = override[key];
@@ -27,12 +27,12 @@ function deepMerge<T extends Record<string, unknown>>(
         typeof baseVal === 'object' &&
         !Array.isArray(baseVal)
       ) {
-        (result as Record<string, unknown>)[key] = deepMerge(
+        result[key] = deepMerge(
           baseVal as Record<string, unknown>,
           overrideVal as Record<string, unknown>
         );
       } else {
-        (result as Record<string, unknown>)[key] = overrideVal;
+        result[key] = overrideVal;
       }
     }
   }
@@ -47,7 +47,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const theme = useMemo(() => {
     const baseTheme = darkMode ? darkTheme : lightTheme;
     if (!themeOverride) return baseTheme;
-    return deepMerge(baseTheme, themeOverride as Partial<NovaTheme>);
+    return deepMerge(
+      baseTheme as unknown as Record<string, unknown>,
+      themeOverride as unknown as Record<string, unknown>
+    ) as unknown as NovaTheme;
   }, [darkMode, themeOverride]);
 
   return (

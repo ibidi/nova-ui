@@ -2,12 +2,11 @@ import React, { useRef, useEffect } from 'react';
 import {
   Pressable,
   Animated,
-  View,
   Text,
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../../theme/useTheme';
-import type { NovaSwitchProps, SwitchSize, SwitchColor } from './Switch.types';
+import type { NovaSwitchProps, SwitchSize } from './Switch.types';
 
 export const NovaSwitch: React.FC<NovaSwitchProps> = ({
   value,

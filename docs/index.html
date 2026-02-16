@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nova-ui — React Native UI Component Library</title>
+  <meta name="description" content="A modern, customizable, and accessible React Native UI component library built with TypeScript." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #6366F1;
+      --primary-light: #A5B4FC;
+      --primary-dark: #4338CA;
+      --secondary: #8B5CF6;
+      --bg: #FFFFFF;
+      --bg-alt: #F8FAFC;
+      --surface: #F1F5F9;
+      --text: #0F172A;
+      --text-secondary: #64748B;
+      --border: #E2E8F0;
+      --code-bg: #1E293B;
+      --code-text: #E2E8F0;
+      --gradient-start: #6366F1;
+      --gradient-end: #8B5CF6;
+      --radius: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.06); }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-brand span {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--text);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px !important;
+      transition: opacity 0.2s;
+    }
+    .nav-github:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 160px 24px 100px;
+      text-align: center;
+      background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 24px rgba(99,102,241,0.4); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+    .install-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      margin-top: 32px;
+    }
+    .install-code .dollar { color: #94A3B8; user-select: none; }
+    .copy-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #94A3B8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .section-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 24px rgba(99,102,241,0.08);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── COMPONENTS SHOWCASE ── */
+    .components {
+      padding: 100px 24px;
+      background: var(--bg-alt);
+    }
+    .components-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .component-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .component-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 24px rgba(99,102,241,0.06);
+    }
+    .component-preview {
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-height: 100px;
+      background: var(--bg);
+    }
+    .component-info {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-alt);
+    }
+    .component-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .component-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Preview components */
+    .preview-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .preview-btn.solid { background: var(--primary); color: #fff; }
+    .preview-btn.outline { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+    .preview-btn.ghost { background: transparent; color: var(--primary); }
+    .preview-btn.soft { background: rgba(99,102,241,0.1); color: var(--primary); }
+
+    .preview-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .preview-badge.success { background: #DCFCE7; color: #16A34A; }
+    .preview-badge.error { background: #FEE2E2; color: #DC2626; }
+    .preview-badge.info { background: #DBEAFE; color: #2563EB; }
+    .preview-badge.warning { background: #FEF3C7; color: #D97706; }
+
+    .preview-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .preview-input {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      width: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .preview-input:focus { border-color: var(--primary); }
+
+    .preview-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(99,102,241,0.1);
+      color: var(--primary);
+    }
+
+    .preview-switch {
+      width: 48px;
+      height: 26px;
+      background: var(--primary);
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+    }
+    .preview-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .preview-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      width: 180px;
+      font-size: 13px;
+    }
+    .preview-card strong { display: block; margin-bottom: 4px; font-size: 14px; }
+    .preview-card span { color: var(--text-secondary); font-size: 12px; }
+
+    .preview-toast {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      border-left: 4px solid #22C55E;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      width: 220px;
+    }
+    .preview-toast .toast-icon { font-size: 16px; }
+
+    /* ── CODE EXAMPLE ── */
+    .example {
+      padding: 100px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .code-block {
+      background: var(--code-bg);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      overflow-x: auto;
+      margin-top: 40px;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--code-text);
+    }
+    .code-block .keyword { color: #C084FC; }
+    .code-block .string { color: #86EFAC; }
+    .code-block .component { color: #FDA4AF; }
+    .code-block .prop { color: #93C5FD; }
+    .code-block .comment { color: #64748B; }
+    .code-block .bracket { color: #94A3B8; }
+
+    /* ── CTA ── */
+    .cta {
+      padding: 100px 24px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+    }
+    .cta h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .cta p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto 40px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    footer a:hover { text-decoration: underline; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 14px; color: var(--text-secondary); }
+    .footer-links a:hover { color: var(--primary); }
+
+    /* ── MOBILE ── */
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; cursor: pointer; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .features-grid { grid-template-columns: 1fr; }
+      .component-grid { grid-template-columns: 1fr; }
+      .hero { padding: 130px 20px 70px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="url(#g1)" />
+          <path d="M8 14L14 8L20 14L14 20L8 14Z" fill="white" opacity="0.9" />
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
+              <stop stop-color="#6366F1" />
+              <stop offset="1" stop-color="#8B5CF6" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>nova-ui</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#components">Components</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="https://github.com/ibidi/nova-ui" class="nav-github" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Build beautiful<br/>React Native apps with<br/><span class="gradient">nova-ui</span></h1>
+    <p>A modern, customizable, and accessible UI component library for React Native. TypeScript-first with 17+ production-ready components.</p>
+    <div class="hero-actions">
+      <a href="#quickstart" class="btn btn-primary">Get Started</a>
+      <a href="#components" class="btn btn-outline">View Components</a>
+    </div>
+    <div class="install-code">
+      <span class="dollar">$</span>
+      <span>npm install @ibidi/nova-ui</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install @ibidi/nova-ui');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <p class="section-label">Why nova-ui?</p>
+    <h2 class="section-title">Everything you need to ship faster</h2>
+    <p class="section-desc">Built from the ground up for React Native with developer experience and accessibility in mind.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#9889;</div>
+        <h3>17+ Components</h3>
+        <p>Buttons, inputs, cards, modals, toasts, avatars, switches, checkboxes, and much more — all ready for production.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#127912;</div>
+        <h3>Theming System</h3>
+        <p>Light &amp; dark mode out of the box. Customize every color, spacing, typography, radius, and shadow token to match your brand.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#128736;</div>
+        <h3>TypeScript First</h3>
+        <p>Complete type definitions for every component and prop. Enjoy full IntelliSense and autocomplete in your IDE.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9855;</div>
+        <h3>Accessible</h3>
+        <p>Built-in accessibility roles, states, and labels. Screen readers and assistive technologies work seamlessly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#10024;</div>
+        <h3>Smooth Animations</h3>
+        <p>Interactive components come with beautiful native animations powered by React Native's Animated API.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#128230;</div>
+        <h3>Zero Dependencies</h3>
+        <p>Only React and React Native as peer dependencies. No bloated node_modules. Tree-shakeable — import only what you need.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="components" id="components">
+    <div class="components-inner">
+      <p class="section-label">Components</p>
+      <h2 class="section-title">Ready-to-use building blocks</h2>
+      <p class="section-desc">Every component is designed to be flexible, consistent, and beautiful out of the box.</p>
+      <div class="component-grid">
+        <!-- Button -->
+        <div class="component-card">
+          <div class="component-preview">
+            <button class="preview-btn solid">Solid</button>
+            <button class="preview-btn outline">Outline</button>
+            <button class="preview-btn ghost">Ghost</button>
+            <button class="preview-btn soft">Soft</button>
+          </div>
+          <div class="component-info">
+            <h4>Button</h4>
+            <p>4 variants, 6 colors, 3 sizes, loading state, icons</p>
+          </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="component-card">
+          <div class="component-preview">
+            <span class="preview-badge success">Success</span>
+            <span class="preview-badge error">Error</span>
+            <span class="preview-badge info">Info</span>
+            <span class="preview-badge warning">Warning</span>
+          </div>
+          <div class="component-info">
+            <h4>Badge</h4>
+            <p>Solid, outline, soft variants with BadgeDot</p>
+          </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="component-card">
+          <div class="component-preview">
+            <div class="preview-avatar" style="background:#6366F1">IB</div>
+            <div class="preview-avatar" style="background:#8B5CF6;width:36px;height:36px;font-size:13px">JD</div>
+            <div class="preview-avatar" style="background:#EC4899;width:52px;height:52px;font-size:19px">AK</div>
+            <div class="preview-avatar" style="background:#22C55E;width:32px;height:32px;font-size:12px">MR</div>
+          </div>
+          <div class="component-info">
+            <h4>Avatar</h4>
+            <p>Image or auto-generated initials with color, 5 sizes</p>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="component-card">
+          <div class="component-preview" style="flex-direction:column;gap:8px">
+            <input class="preview-input" placeholder="Outline input..." />
+            <input class="preview-input" placeholder="With label..." style="background:#F1F5F9;border-color:transparent;border-bottom:2px solid var(--border)" />
+          </div>
+          <div class="component-info">
+            <h4>Input</h4>
+            <p>3 variants, label, helper text, error state, icons</p>
+          </div>
+        </div>
+
+        <!-- Chip -->
+        <div class="component-card">
+          <div class="component-preview">
+            <span class="preview-chip">React Native</span>
+            <span class="preview-chip" style="background:rgba(139,92,246,0.1);color:#8B5CF6">TypeScript</span>
+            <span class="preview-chip" style="background:rgba(34,197,94,0.1);color:#22C55E">Open Source</span>
+          </div>
+          <div class="component-info">
+            <h4>Chip</h4>
+            <p>Selectable, closable, with icons, 3 variants</p>
+          </div>
+        </div>
+
+        <!-- Switch -->
+        <div class="component-card">
+          <div class="component-preview">
+            <div class="preview-switch"></div>
+            <div class="preview-switch" style="background:var(--border);">
+              <style>.preview-switch[style*="border"]::after { right: auto !important; left: 2px !important; }</style>
+            </div>
+          </div>
+          <div class="component-info">
+            <h4>Switch</h4>
+            <p>Animated toggle, 5 colors, 3 sizes, label</p>
+          </div>
+        </div>
+
+        <!-- Card -->
+        <div class="component-card">
+          <div class="component-preview">
+            <div class="preview-card">
+              <strong>Card Title</strong>
+              <span>Elevated, outlined, or filled variants</span>
+            </div>
+          </div>
+          <div class="component-info">
+            <h4>Card</h4>
+            <p>3 variants with padding and rounded options</p>
+          </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="component-card">
+          <div class="component-preview">
+            <div class="preview-toast">
+              <span class="toast-icon" style="color:#22C55E">&#10003;</span>
+              <div>
+                <strong style="font-size:13px">Saved!</strong>
+                <div style="font-size:11px;color:var(--text-secondary)">Changes have been saved.</div>
+              </div>
+            </div>
+          </div>
+          <div class="component-info">
+            <h4>Toast</h4>
+            <p>4 types, auto-dismiss, animated, top/bottom position</p>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="component-card">
+          <div class="component-preview" style="position:relative">
+            <div style="background:#F1F5F9;border-radius:10px;padding:20px 24px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.12);font-size:14px;font-weight:600;width:180px">
+              Modal Content
+              <div style="font-size:11px;color:var(--text-secondary);font-weight:400;margin-top:4px">4 sizes, animated</div>
+            </div>
+          </div>
+          <div class="component-info">
+            <h4>Modal</h4>
+            <p>sm, md, lg, full sizes with keyboard avoidance</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section class="example" id="quickstart">
+    <p class="section-label">Quick Start</p>
+    <h2 class="section-title">Up and running in minutes</h2>
+    <p class="section-desc">Wrap your app with ThemeProvider, import any component, and start building.</p>
+    <div class="code-block">
+      <pre><span class="keyword">import</span> <span class="bracket">{</span>
+  ThemeProvider<span class="bracket">,</span>
+  ToastProvider<span class="bracket">,</span>
+  Button<span class="bracket">,</span>
+  NovaText<span class="bracket">,</span>
+  Input<span class="bracket">,</span>
+  Card<span class="bracket">,</span>
+  VStack<span class="bracket">,</span>
+  useToast<span class="bracket">,</span>
+<span class="bracket">}</span> <span class="keyword">from</span> <span class="string">'@ibidi/nova-ui'</span><span class="bracket">;</span>
+
+<span class="keyword">export default function</span> <span class="component">App</span><span class="bracket">() {</span>
+  <span class="keyword">return</span> <span class="bracket">(</span>
+    <span class="bracket">&lt;</span><span class="component">ThemeProvider</span> <span class="prop">darkMode</span><span class="bracket">={</span><span class="keyword">false</span><span class="bracket">}&gt;</span>
+      <span class="bracket">&lt;</span><span class="component">ToastProvider</span><span class="bracket">&gt;</span>
+        <span class="bracket">&lt;</span><span class="component">VStack</span> <span class="prop">spacing</span><span class="bracket">=</span><span class="string">"md"</span> <span class="prop">padding</span><span class="bracket">=</span><span class="string">"lg"</span><span class="bracket">&gt;</span>
+          <span class="bracket">&lt;</span><span class="component">NovaText</span> <span class="prop">variant</span><span class="bracket">=</span><span class="string">"h2"</span><span class="bracket">&gt;</span>Welcome<span class="bracket">&lt;/</span><span class="component">NovaText</span><span class="bracket">&gt;</span>
+          <span class="bracket">&lt;</span><span class="component">Card</span> <span class="prop">variant</span><span class="bracket">=</span><span class="string">"elevated"</span><span class="bracket">&gt;</span>
+            <span class="bracket">&lt;</span><span class="component">Input</span> <span class="prop">label</span><span class="bracket">=</span><span class="string">"Email"</span> <span class="prop">placeholder</span><span class="bracket">=</span><span class="string">"you@example.com"</span> <span class="bracket">/&gt;</span>
+            <span class="bracket">&lt;</span><span class="component">Button</span> <span class="prop">color</span><span class="bracket">=</span><span class="string">"primary"</span><span class="bracket">&gt;</span>Sign In<span class="bracket">&lt;/</span><span class="component">Button</span><span class="bracket">&gt;</span>
+          <span class="bracket">&lt;/</span><span class="component">Card</span><span class="bracket">&gt;</span>
+        <span class="bracket">&lt;/</span><span class="component">VStack</span><span class="bracket">&gt;</span>
+      <span class="bracket">&lt;/</span><span class="component">ToastProvider</span><span class="bracket">&gt;</span>
+    <span class="bracket">&lt;/</span><span class="component">ThemeProvider</span><span class="bracket">&gt;</span>
+  <span class="bracket">);</span>
+<span class="bracket">}</span></pre>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Start building today</h2>
+    <p>nova-ui is free and open source. Contribute, customize, and create beautiful React Native apps.</p>
+    <div class="hero-actions">
+      <a href="https://github.com/ibidi/nova-ui" class="btn btn-primary" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        Star on GitHub
+      </a>
+      <a href="https://www.npmjs.com/package/@ibidi/nova-ui" class="btn btn-outline" target="_blank">View on npm</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>Built with &#10084;&#65039; by <a href="https://github.com/ibidi">Ihsan Baki Dogan</a></p>
+      <div class="footer-links">
+        <a href="https://github.com/ibidi/nova-ui">GitHub</a>
+        <a href="https://github.com/ibidi/nova-ui/issues">Issues</a>
+        <a href="https://github.com/ibidi/nova-ui/blob/main/LICENSE">MIT License</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+  </script>
+</body>
+</html>

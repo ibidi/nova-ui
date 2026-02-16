@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import type { DimensionValue } from 'react-native';
 import { useTheme } from '../../theme/useTheme';
 import type { NovaModalProps, ModalSize } from './Modal.types';
 
@@ -25,7 +26,7 @@ export const NovaModal: React.FC<NovaModalProps> = ({
 }) => {
   const theme = useTheme();
 
-  const sizeMap: Record<ModalSize, { width: string; maxHeight: string }> = {
+  const sizeMap: Record<ModalSize, { width: DimensionValue; maxHeight: DimensionValue }> = {
     sm: { width: '75%', maxHeight: '50%' },
     md: { width: '85%', maxHeight: '70%' },
     lg: { width: '92%', maxHeight: '85%' },
