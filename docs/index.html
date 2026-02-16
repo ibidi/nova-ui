@@ -345,34 +345,38 @@
       background: var(--white); border: 1px solid var(--gray-200);
       border-radius: 14px; overflow: hidden;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer; position: relative;
+      position: relative;
     }
     .comp-card:hover {
-      border-color: var(--indigo); box-shadow: 0 8px 30px rgba(99,102,241,0.08);
-      transform: translateY(-4px);
+      border-color: var(--gray-300); box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+      transform: translateY(-2px);
     }
-    .comp-card:active { transform: translateY(-2px) scale(0.99); }
     .comp-preview {
       padding: 32px 24px; display: flex; align-items: center;
       justify-content: center; gap: 10px; flex-wrap: wrap;
       min-height: 120px; position: relative;
     }
     .comp-meta {
-      padding: 14px 20px; border-top: 1px solid var(--gray-100);
+      padding: 10px 16px 10px 20px; border-top: 1px solid var(--gray-100);
       display: flex; justify-content: space-between; align-items: center;
     }
+    .comp-meta-left { display: flex; flex-direction: column; gap: 1px; }
     .comp-name { font-size: 13px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.01em; }
     .comp-desc { font-size: 11.5px; color: var(--gray-400); }
-    .comp-meta-arrow {
-      width: 20px; height: 20px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--gray-50); color: var(--gray-400); font-size: 12px;
-      transition: all 0.2s; flex-shrink: 0; margin-left: 8px;
+    .comp-code-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 7px; border: none;
+      background: var(--gray-50); color: var(--gray-500);
+      font-size: 11px; font-weight: 600; font-family: var(--mono);
+      cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+      border: 1px solid var(--gray-100);
     }
-    .comp-card:hover .comp-meta-arrow {
-      background: rgba(99,102,241,0.08); color: var(--indigo);
-      transform: translateX(2px);
+    .comp-code-btn:hover {
+      background: rgba(99,102,241,0.06); color: var(--indigo);
+      border-color: rgba(99,102,241,0.15);
     }
+    .comp-code-btn:active { transform: scale(0.95); }
+    .comp-code-btn svg { width: 12px; height: 12px; }
 
     /* Live previews */
     .p-btn {
@@ -828,6 +832,7 @@
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    .p-lc-svg { width: 28px; height: 28px; flex-shrink: 0; }
     .p-lc-icon {
       width: 32px; height: 32px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
@@ -1505,26 +1510,34 @@
         </div>
 
         <div class="comp-card reveal">
-          <div class="comp-preview" style="width:100%;overflow:hidden;padding:24px 16px">
-            <div class="p-logocloud">
+          <div class="comp-preview" style="width:100%;overflow:hidden;padding:24px 16px;flex-direction:column">
+            <div class="p-logocloud" id="lc-cloud">
               <div class="p-logocloud-item p-lc-blur" style="--delay:0s">
-                <div class="p-lc-icon" style="background:rgba(99,102,241,0.08);color:var(--indigo)">N</div>
-                <span class="p-lc-name">Nova UI</span>
-              </div>
-              <div class="p-logocloud-item p-lc-blur" style="--delay:0.1s">
-                <div class="p-lc-icon" style="background:rgba(139,92,246,0.08);color:var(--violet)">E</div>
-                <span class="p-lc-name">Expo</span>
-              </div>
-              <div class="p-logocloud-item p-lc-blur" style="--delay:0.2s">
-                <div class="p-lc-icon" style="background:rgba(14,165,233,0.08);color:var(--sky)">R</div>
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#61DAFB" opacity="0.12"/><circle cx="12" cy="12" r="2.2" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(120 12 12)"/></svg>
                 <span class="p-lc-name">React</span>
               </div>
-              <div class="p-logocloud-item p-lc-blur" style="--delay:0.3s">
-                <div class="p-lc-icon" style="background:rgba(16,185,129,0.08);color:var(--emerald)">T</div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.1s">
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#3178C6" opacity="0.12"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#3178C6" font-family="system-ui">TS</text></svg>
                 <span class="p-lc-name">TypeScript</span>
               </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.2s">
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#000" opacity="0.06"/><path d="M12 2L15.5 8.5H20L16 13L17.5 20L12 16.5L6.5 20L8 13L4 8.5H8.5L12 2Z" fill="#000" opacity="0.7"/></svg>
+                <span class="p-lc-name">Expo</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.3s">
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#06B6D4" opacity="0.12"/><path d="M6 12.5C8 8 10 6 12 6s4 2 6 6.5c-2 4.5-4 6.5-6 6.5s-4-2-6-6.5z" stroke="#06B6D4" stroke-width="1.2" fill="none"/><circle cx="12" cy="12.5" r="1.5" fill="#06B6D4"/></svg>
+                <span class="p-lc-name">Tailwind</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.4s">
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#000" opacity="0.06"/><path d="M12 4L20 20H4L12 4Z" fill="none" stroke="#000" stroke-width="1.5" opacity="0.6"/></svg>
+                <span class="p-lc-name">Vercel</span>
+              </div>
+              <div class="p-logocloud-item p-lc-blur" style="--delay:0.5s">
+                <svg class="p-lc-svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#F24E1E" opacity="0.1"/><circle cx="9" cy="8" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><circle cx="15" cy="8" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><circle cx="9" cy="14" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><rect x="12" y="11" width="6" height="6" rx="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><rect x="6" y="17" width="6" height="6" rx="1" stroke="#F24E1E" stroke-width="1.2" fill="none"/></svg>
+                <span class="p-lc-name">Figma</span>
+              </div>
             </div>
-            <div class="p-lc-variant-switch">
+            <div class="p-lc-variant-switch" onclick="event.stopPropagation()">
               <button class="p-lc-vbtn p-lc-vbtn-active" onclick="switchLogoVariant('grid', this)">Grid</button>
               <button class="p-lc-vbtn" onclick="switchLogoVariant('marquee', this)">Marquee</button>
               <button class="p-lc-vbtn" onclick="switchLogoVariant('blur', this)">Blur Flip</button>
@@ -2392,22 +2405,32 @@ import type { LogoItem } from 'nova-native-ui';`,
       });
     });
 
-    // ═══ COMPONENT CARD ARROWS + CLICK ═══
+    // ═══ COMPONENT CARD CODE BUTTONS ═══
     document.querySelectorAll('.comp-card').forEach(card => {
       const meta = card.querySelector('.comp-meta');
-      if (meta) {
-        const arrow = document.createElement('span');
-        arrow.className = 'comp-meta-arrow';
-        arrow.innerHTML = '&#8594;';
-        meta.appendChild(arrow);
-      }
+      const nameEl = card.querySelector('.comp-name');
+      const descEl = card.querySelector('.comp-desc');
+      if (!meta || !nameEl) return;
 
-      card.addEventListener('click', () => {
-        const nameEl = card.querySelector('.comp-name');
-        if (!nameEl) return;
-        const name = nameEl.textContent.trim();
-        if (COMPONENTS[name]) openModal(name);
+      const name = nameEl.textContent.trim();
+      if (!COMPONENTS[name]) return;
+
+      const left = document.createElement('div');
+      left.className = 'comp-meta-left';
+      left.appendChild(nameEl);
+      left.appendChild(descEl);
+
+      const btn = document.createElement('button');
+      btn.className = 'comp-code-btn';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Code';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal(name);
       });
+
+      meta.innerHTML = '';
+      meta.appendChild(left);
+      meta.appendChild(btn);
     });
 
     // ═══ MODAL ═══
@@ -2510,29 +2533,31 @@ import type { LogoItem } from 'nova-native-ui';`,
     }
 
     // ═══ LOGOCLOUD VARIANT SWITCHER ═══
+    const LC_LOGOS = [
+      { name: 'React', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="#61DAFB" opacity="0.12"/><circle cx="12" cy="12" r="2.2" fill="#61DAFB"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1" fill="none" transform="rotate(120 12 12)"/></svg>' },
+      { name: 'TypeScript', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#3178C6" opacity="0.12"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="700" fill="#3178C6" font-family="system-ui">TS</text></svg>' },
+      { name: 'Expo', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#000" opacity="0.06"/><path d="M12 2L15.5 8.5H20L16 13L17.5 20L12 16.5L6.5 20L8 13L4 8.5H8.5L12 2Z" fill="#000" opacity="0.7"/></svg>' },
+      { name: 'Tailwind', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#06B6D4" opacity="0.12"/><path d="M6 12.5C8 8 10 6 12 6s4 2 6 6.5c-2 4.5-4 6.5-6 6.5s-4-2-6-6.5z" stroke="#06B6D4" stroke-width="1.2" fill="none"/><circle cx="12" cy="12.5" r="1.5" fill="#06B6D4"/></svg>' },
+      { name: 'Vercel', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#000" opacity="0.06"/><path d="M12 4L20 20H4L12 4Z" fill="none" stroke="#000" stroke-width="1.5" opacity="0.6"/></svg>' },
+      { name: 'Figma', svg: '<svg class="p-lc-svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#F24E1E" opacity="0.1"/><circle cx="9" cy="8" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><circle cx="15" cy="8" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><circle cx="9" cy="14" r="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><rect x="12" y="11" width="6" height="6" rx="3" stroke="#F24E1E" stroke-width="1.2" fill="none"/><rect x="6" y="17" width="6" height="6" rx="1" stroke="#F24E1E" stroke-width="1.2" fill="none"/></svg>' },
+    ];
+
     function switchLogoVariant(variant, el) {
       el.parentElement.querySelectorAll('.p-lc-vbtn').forEach(b => b.classList.remove('p-lc-vbtn-active'));
       el.classList.add('p-lc-vbtn-active');
 
-      const cloud = el.closest('.comp-preview').querySelector('.p-logocloud');
-      const logos = [
-        { letter: 'N', name: 'Nova UI', bg: 'rgba(99,102,241,0.08)', color: 'var(--indigo)' },
-        { letter: 'E', name: 'Expo', bg: 'rgba(139,92,246,0.08)', color: 'var(--violet)' },
-        { letter: 'R', name: 'React', bg: 'rgba(14,165,233,0.08)', color: 'var(--sky)' },
-        { letter: 'T', name: 'TypeScript', bg: 'rgba(16,185,129,0.08)', color: 'var(--emerald)' },
-      ];
-
+      const cloud = document.getElementById('lc-cloud');
       const makeItem = (l, delay, extra) => `
         <div class="p-logocloud-item ${extra || ''}" style="--delay:${delay}s"
           ${variant === 'spotlight' ? 'onmousemove="lcSpotlight(event, this)"' : ''}>
-          <div class="p-lc-icon" style="background:${l.bg};color:${l.color}">${l.letter}</div>
+          ${l.svg}
           <span class="p-lc-name">${l.name}</span>
         </div>`;
 
       cloud.className = 'p-logocloud' + (variant === 'spotlight' ? ' p-lc-spotlight' : '');
 
       if (variant === 'marquee') {
-        const items = logos.map((l, i) => makeItem(l, i * 0.05, '')).join('');
+        const items = LC_LOGOS.map((l, i) => makeItem(l, i * 0.03, '')).join('');
         cloud.innerHTML = `
           <div class="p-lc-marquee-wrapper">
             <div class="p-lc-marquee-track">
@@ -2540,11 +2565,11 @@ import type { LogoItem } from 'nova-native-ui';`,
             </div>
           </div>`;
       } else if (variant === 'blur') {
-        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, 'p-lc-blur')).join('');
+        cloud.innerHTML = LC_LOGOS.map((l, i) => makeItem(l, i * 0.08, 'p-lc-blur')).join('');
       } else if (variant === 'spotlight') {
-        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, '')).join('');
+        cloud.innerHTML = LC_LOGOS.map((l, i) => makeItem(l, i * 0.08, '')).join('');
       } else {
-        cloud.innerHTML = logos.map((l, i) => makeItem(l, i * 0.1, '')).join('');
+        cloud.innerHTML = LC_LOGOS.map((l, i) => makeItem(l, i * 0.08, '')).join('');
       }
     }
 
