@@ -420,6 +420,7 @@
       transition: transform 0.2s;
     }
     .p-avatar:hover { transform: scale(1.1); z-index: 1; }
+    .p-avatar-img { object-fit: cover; }
     .avatar-stack { display: flex; margin-left: 0; }
     .avatar-stack .p-avatar + .p-avatar { margin-left: -10px; }
 
@@ -892,9 +893,11 @@
     .modal-overlay.open .modal-content {
       transform: translateY(0) scale(1); opacity: 1;
     }
-    .modal-content::-webkit-scrollbar { width: 6px; }
+    .modal-content::-webkit-scrollbar { width: 4px; }
     .modal-content::-webkit-scrollbar-track { background: transparent; }
-    .modal-content::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+    .modal-content::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 2px; }
+    .modal-content::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+    .modal-content { scrollbar-width: thin; scrollbar-color: var(--gray-200) transparent; }
     .modal-header {
       padding: 28px 28px 0; display: flex; justify-content: space-between;
       align-items: flex-start; position: sticky; top: 0;
@@ -945,7 +948,9 @@
     .modal-code-copy.copied { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.2); color: var(--emerald); }
     .modal-code-body {
       padding: 16px 20px; overflow-x: auto;
+      scrollbar-width: none; -ms-overflow-style: none;
     }
+    .modal-code-body::-webkit-scrollbar { display: none; }
     .modal-code-body pre {
       font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
       color: rgba(255,255,255,0.85); white-space: pre; margin: 0;
@@ -1183,15 +1188,20 @@
           <div class="comp-meta"><span class="comp-name">Input</span><span class="comp-desc">3 variants · label · error state</span></div>
         </div>
 
-        <div class="comp-card reveal reveal-delay-2">
-          <div class="comp-preview">
-            <div class="avatar-stack">
-              <div class="p-avatar" style="background:#6366F1">IB</div>
-              <div class="p-avatar" style="background:#8B5CF6">JD</div>
-              <div class="p-avatar" style="background:#EC4899">AS</div>
-              <div class="p-avatar" style="background:#0EA5E9">MK</div>
-              <div class="p-avatar" style="background:#10B981">TR</div>
+        <div class="comp-card reveal reveal-delay-2" id="avatar-card">
+          <div class="comp-preview" id="avatar-preview">
+            <div class="avatar-stack" id="avatar-stack">
+              <img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=1" alt="" />
+              <img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=5" alt="" />
+              <img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=8" alt="" />
+              <img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=12" alt="" />
+              <img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=20" alt="" />
             </div>
+          </div>
+          <div class="comp-controls" onclick="event.stopPropagation()">
+            <button class="comp-control-btn" onclick="switchAvatarMode('photo', this)">Photo</button>
+            <button class="comp-control-btn active" onclick="switchAvatarMode('initials', this)">Initials</button>
+            <button class="comp-control-btn" onclick="switchAvatarMode('sizes', this)">Sizes</button>
           </div>
           <div class="comp-meta"><span class="comp-name">Avatar</span><span class="comp-desc">Image or initials · 5 sizes</span></div>
         </div>
@@ -2578,6 +2588,58 @@ import type { LogoItem } from 'nova-native-ui';`,
       el.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
       el.style.setProperty('--my', (e.clientY - rect.top) + 'px');
     }
+
+    // ═══ AVATAR MODE SWITCHER ═══
+    function switchAvatarMode(mode, el) {
+      el.parentElement.querySelectorAll('.comp-control-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const stack = document.getElementById('avatar-stack');
+
+      const photos = [1, 5, 8, 12, 20];
+      const initials = [
+        { text: 'IB', bg: '#6366F1' },
+        { text: 'JD', bg: '#8B5CF6' },
+        { text: 'AS', bg: '#EC4899' },
+        { text: 'MK', bg: '#0EA5E9' },
+        { text: 'TR', bg: '#10B981' },
+      ];
+      const sizes = [
+        { s: 28, fs: 10 },
+        { s: 34, fs: 12 },
+        { s: 40, fs: 14 },
+        { s: 48, fs: 16 },
+        { s: 56, fs: 18 },
+      ];
+
+      if (mode === 'photo') {
+        stack.innerHTML = photos.map(id =>
+          `<img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=${id}" alt="" />`
+        ).join('');
+      } else if (mode === 'initials') {
+        stack.innerHTML = initials.map(a =>
+          `<div class="p-avatar" style="background:${a.bg}">${a.text}</div>`
+        ).join('');
+      } else {
+        stack.className = 'avatar-stack';
+        stack.innerHTML = sizes.map((sz, i) =>
+          `<img class="p-avatar p-avatar-img" src="https://i.pravatar.cc/80?img=${photos[i]}" alt="" style="width:${sz.s}px;height:${sz.s}px;font-size:${sz.fs}px" />`
+        ).join('');
+      }
+    }
+
+    // Init avatar to "initials" by default
+    (function() {
+      const stack = document.getElementById('avatar-stack');
+      if (stack) {
+        stack.innerHTML = [
+          { text: 'IB', bg: '#6366F1' },
+          { text: 'JD', bg: '#8B5CF6' },
+          { text: 'AS', bg: '#EC4899' },
+          { text: 'MK', bg: '#0EA5E9' },
+          { text: 'TR', bg: '#10B981' },
+        ].map(a => `<div class="p-avatar" style="background:${a.bg}">${a.text}</div>`).join('');
+      }
+    })();
   </script>
 </body>
 </html>
