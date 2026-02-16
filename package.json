@@ -29,7 +29,7 @@
     "accessible",
     "nova-ui"
   ],
-  "author": "",
+  "author": "Ihsan Baki Dogan <info@ihsanbakidogan.com> (https://github.com/ibidi)",
   "license": "MIT",
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -45,10 +45,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/ibidi/nova-ui.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/ibidi/nova-ui/issues"
   },
-  "homepage": ""
+  "homepage": "https://github.com/ibidi/nova-ui#readme"
 }
