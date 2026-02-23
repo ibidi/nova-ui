@@ -117,13 +117,22 @@
     /* ═══ NAV ═══ */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(255,255,255,0.6);
+      background: transparent;
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-      transition: all 0.3s;
+      border-bottom: 1px solid transparent;
+      transition: all 0.4s;
     }
-    nav.scrolled { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+    nav .nav-brand { color: #fff; }
+    nav .nav-links a { color: rgba(255,255,255,0.6); }
+    nav .nav-links a:hover { color: #fff; }
+    nav.scrolled {
+      background: rgba(255,255,255,0.85);
+      border-bottom-color: rgba(0,0,0,0.06);
+    }
+    nav.scrolled .nav-brand { color: var(--gray-900); }
+    nav.scrolled .nav-links a { color: var(--gray-500); }
+    nav.scrolled .nav-links a:hover { color: var(--gray-900); }
     .nav-inner {
       max-width: 1180px; margin: 0 auto; padding: 0 32px;
       height: 60px; display: flex; align-items: center; justify-content: space-between;
@@ -162,33 +171,28 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      background: #09090B;
     }
-    .hero-bg {
+    .hero-canvas {
       position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 600px 400px at 50% 0%, rgba(99,102,241,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 400px 300px at 20% 50%, rgba(139,92,246,0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 400px 300px at 80% 60%, rgba(14,165,233,0.03) 0%, transparent 70%);
+      width: 100%; height: 100%;
     }
-    .hero-grid {
-      position: absolute; inset: 0; pointer-events: none; opacity: 0.3;
-      background-image:
-        linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black, transparent);
-      -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 40%, black, transparent);
+    .hero-fade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 180px;
+      background: linear-gradient(to bottom, transparent, #09090B);
+      pointer-events: none; z-index: 1;
     }
-    .hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+    .hero-content { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; }
     .hero-pill {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--gray-50); border: 1px solid var(--gray-200);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
       padding: 6px 16px 6px 8px; border-radius: 100px;
-      font-size: 12.5px; font-weight: 500; color: var(--gray-600);
+      font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.6);
       margin-bottom: 32px; animation: fadeUp 0.6s ease both;
       transition: border-color 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }
-    .hero-pill:hover { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+    .hero-pill:hover { border-color: rgba(99,102,241,0.4); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
     .hero-pill-badge {
       background: linear-gradient(135deg, var(--indigo), var(--violet));
       color: var(--white); font-size: 10px; font-weight: 700;
@@ -198,18 +202,18 @@
       font-size: clamp(42px, 5.5vw, 68px);
       font-weight: 700; letter-spacing: -0.035em;
       line-height: 1.05; margin-bottom: 24px;
-      color: var(--gray-950);
+      color: #FFFFFF;
       animation: fadeUp 0.6s ease 0.1s both;
     }
     .hero h1 .accent {
-      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 50%, var(--sky) 100%);
+      background: linear-gradient(135deg, #818CF8 0%, #C084FC 50%, #7cff67 100%);
       background-size: 200% auto;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
       animation: gradient-shift 4s ease infinite;
     }
     .hero p {
-      font-size: 17px; color: var(--gray-500); max-width: 480px;
+      font-size: 17px; color: rgba(255,255,255,0.5); max-width: 480px;
       margin: 0 auto 44px; line-height: 1.65; letter-spacing: -0.01em;
       animation: fadeUp 0.6s ease 0.2s both;
     }
@@ -226,15 +230,15 @@
     }
     .btn:active { transform: scale(0.97); }
     .btn-primary {
-      background: var(--gray-950); color: var(--white);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.08);
+      background: var(--indigo); color: var(--white);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 16px rgba(99,102,241,0.3);
     }
-    .btn-primary:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-1px); }
+    .btn-primary:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 8px 28px rgba(99,102,241,0.4); transform: translateY(-1px); }
     .btn-ghost {
-      background: transparent; color: var(--gray-600);
-      border: 1px solid var(--gray-200);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
     }
-    .btn-ghost:hover { background: var(--gray-50); color: var(--gray-900); border-color: var(--gray-300); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
 
     .install-bar {
       display: inline-flex; align-items: center; gap: 14px;
@@ -262,7 +266,8 @@
 
     /* ═══ STATS ═══ */
     .stats {
-      padding: 0 32px; margin-top: -40px; position: relative; z-index: 2;
+      padding: 40px 32px 60px; position: relative; z-index: 2;
+      background: #09090B;
     }
     .stats-inner {
       max-width: 700px; margin: 0 auto;
@@ -271,9 +276,9 @@
     .stat { text-align: center; }
     .stat-value {
       font-size: 32px; font-weight: 700; letter-spacing: -0.03em;
-      color: var(--gray-950);
+      color: #FFFFFF;
     }
-    .stat-label { font-size: 13px; color: var(--gray-400); font-weight: 500; margin-top: 4px; }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 4px; }
 
     /* ═══ FEATURES ═══ */
     .features { padding: 140px 32px; max-width: 1180px; margin: 0 auto; }
@@ -545,6 +550,16 @@
       letter-spacing: -0.03em; margin-bottom: 16px; color: var(--gray-950);
     }
     .cta p { font-size: 16px; color: var(--gray-400); max-width: 420px; margin: 0 auto 40px; line-height: 1.6; }
+    .btn-cta-primary {
+      background: var(--gray-950); color: var(--white);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .btn-cta-primary:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-1px); }
+    .btn-cta-ghost {
+      background: transparent; color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+    }
+    .btn-cta-ghost:hover { background: var(--gray-50); color: var(--gray-900); border-color: var(--gray-300); }
 
     /* ═══ FOOTER ═══ */
     footer {
@@ -1051,9 +1066,9 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
+  <section class="hero" id="hero">
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
+    <div class="hero-fade"></div>
     <div class="hero-content">
       <div class="hero-pill">
         <span class="hero-pill-badge">v0.2</span>
@@ -1614,11 +1629,11 @@
       <h2>Start shipping<br/>beautiful apps today</h2>
       <p>Open source, free forever. Star us on GitHub and join the community.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://github.com/ibidi/nova-ui" class="btn btn-primary" target="_blank">
+        <a href="https://github.com/ibidi/nova-ui" class="btn btn-cta-primary" target="_blank">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           Star on GitHub
         </a>
-        <a href="https://www.npmjs.com/package/nova-native-ui" class="btn btn-ghost" target="_blank">View on npm</a>
+        <a href="https://www.npmjs.com/package/nova-native-ui" class="btn btn-cta-ghost" target="_blank">View on npm</a>
       </div>
     </div>
   </section>
@@ -1678,6 +1693,129 @@
   </footer>
 
   <script>
+    // ═══ COLORBENDS WEBGL SHADER ═══
+    (function() {
+      const canvas = document.getElementById('heroCanvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return;
+
+      const hero = document.getElementById('hero');
+      let mouse = { x: 0.5, y: 0.5 };
+      let targetMouse = { x: 0.5, y: 0.5 };
+
+      hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        targetMouse.x = (e.clientX - rect.left) / rect.width;
+        targetMouse.y = (e.clientY - rect.top) / rect.height;
+      });
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = hero.offsetWidth * dpr;
+        canvas.height = hero.offsetHeight * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const vsrc = `attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0,1);}`;
+      const fsrc = `
+precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform vec3 u_c0, u_c1, u_c2;
+
+vec3 hash(vec3 p) {
+  p = vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));
+  return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+}
+float noise(vec3 p) {
+  vec3 i = floor(p), f = fract(p);
+  vec3 u = f*f*(3.0-2.0*f);
+  return mix(mix(mix(dot(hash(i),f),dot(hash(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+    mix(dot(hash(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+    mix(mix(dot(hash(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+    mix(dot(hash(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / u_resolution;
+  float aspect = u_resolution.x / u_resolution.y;
+  vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+
+  float t = u_time * 0.2;
+  vec2 mOff = (u_mouse - 0.5) * 0.3;
+  p += mOff;
+
+  float angle = 0.785;
+  float ca = cos(angle + t * 0.05), sa = sin(angle + t * 0.05);
+  p = mat2(ca, -sa, sa, ca) * p;
+
+  float n1 = noise(vec3(p * 1.8, t * 0.4)) * 1.0;
+  float n2 = noise(vec3(p * 3.2 + 5.0, t * 0.3)) * 0.5;
+  float warp = n1 + n2;
+
+  float band = p.x + p.y + warp;
+  float s1 = smoothstep(-0.4, 0.6, sin(band * 2.5 + t));
+  float s2 = smoothstep(-0.4, 0.6, sin(band * 2.5 + t + 2.094));
+  float s3 = smoothstep(-0.4, 0.6, sin(band * 2.5 + t + 4.189));
+
+  vec3 col = u_c0 * s1 + u_c1 * s2 + u_c2 * s3;
+  col *= 0.7;
+
+  float vignette = 1.0 - length((uv - 0.5) * 1.4);
+  vignette = smoothstep(0.0, 0.7, vignette);
+  col *= vignette;
+
+  col = mix(vec3(0.035, 0.035, 0.043), col, 0.85);
+
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+      function compile(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return s;
+      }
+      const prog = gl.createProgram();
+      gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsrc));
+      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsrc));
+      gl.linkProgram(prog);
+      gl.useProgram(prog);
+
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+      const aPos = gl.getAttribLocation(prog, 'a_pos');
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+      const uTime = gl.getUniformLocation(prog, 'u_time');
+      const uRes = gl.getUniformLocation(prog, 'u_resolution');
+      const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+      const uC0 = gl.getUniformLocation(prog, 'u_c0');
+      const uC1 = gl.getUniformLocation(prog, 'u_c1');
+      const uC2 = gl.getUniformLocation(prog, 'u_c2');
+
+      gl.uniform3f(uC0, 0.322, 0.153, 1.0);
+      gl.uniform3f(uC1, 1.0, 0.624, 0.988);
+      gl.uniform3f(uC2, 0.486, 1.0, 0.404);
+
+      function frame(now) {
+        mouse.x += (targetMouse.x - mouse.x) * 0.03;
+        mouse.y += (targetMouse.y - mouse.y) * 0.03;
+
+        gl.uniform1f(uTime, now * 0.001);
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform2f(uMouse, mouse.x, 1.0 - mouse.y);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
     // ═══ COMPONENT DATA ═══
     const COMPONENTS = {
       Button: {
@@ -2300,7 +2438,11 @@ import type { LogoItem } from 'nova-native-ui';`,
 
     // ═══ NAVBAR ═══
     const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10));
+    const heroEl = document.getElementById('hero');
+    window.addEventListener('scroll', () => {
+      const heroBottom = heroEl ? heroEl.offsetHeight - 80 : 300;
+      nav.classList.toggle('scrolled', scrollY > heroBottom);
+    });
 
     // ═══ COPY INSTALL ═══
     function copyInstall() {
